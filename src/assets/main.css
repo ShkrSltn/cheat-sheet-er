@@ -1,0 +1,79 @@
+@import 'tailwindcss';
+
+:root {
+  --color-bg-primary: #37353e;
+  --color-bg-secondary: #44444e;
+  --color-bg-accent: #715a5a;
+  --color-text-primary: #d3dad9;
+  --color-text-secondary: #a0a0a0;
+  --color-border: #44444e;
+  --color-border-hover: #715a5a;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-bg-accent) var(--color-bg-secondary);
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--color-bg-accent);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #8a6b6b;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-border-hover);
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Toast customization - minimal */
+.Vue-Toastification__toast {
+  min-height: auto !important;
+  padding: 8px 16px !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+  font-size: 13px !important;
+  border: none !important;
+}
+
+.Vue-Toastification__toast--success {
+  background-color: #10b981 !important;
+  color: white !important;
+}
+
+.Vue-Toastification__toast--error {
+  background-color: #ef4444 !important;
+  color: white !important;
+}
+
+.Vue-Toastification__toast--warning {
+  background-color: #f59e0b !important;
+  color: white !important;
+}
+
+.Vue-Toastification__toast--info {
+  background-color: var(--color-bg-accent) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.Vue-Toastification__toast-body {
+  padding: 0 !important;
+  margin: 0 !important;
+}
