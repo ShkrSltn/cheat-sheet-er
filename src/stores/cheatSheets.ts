@@ -4,11 +4,14 @@ import type { CheatSheet, CheatSheetInput, CheatSheetUpdate } from '@/types'
 import { useLocalStorage } from '@/composables/useLocalStorage'
 
 const STORAGE_KEY = 'cheat-sheets'
+const CATEGORIES_KEY = 'categories'
 
 export const useCheatSheetsStore = defineStore('cheatSheets', () => {
   const storage = useLocalStorage<CheatSheet[]>(STORAGE_KEY, [])
+  const categoriesStorage = useLocalStorage<string[]>(CATEGORIES_KEY, [])
 
   const cheatSheets = ref<CheatSheet[]>(storage.getItem())
+  const customCategories = ref<string[]>(categoriesStorage.getItem())
   const searchQuery = ref('')
   const activeCategory = ref<string | null>(null)
 
@@ -37,10 +40,12 @@ export const useCheatSheetsStore = defineStore('cheatSheets', () => {
   })
 
   const categories = computed(() => {
-    const uniqueCategories = new Set(
-      cheatSheets.value.map((sheet) => sheet.category).filter((category) => category.trim()),
-    )
-    return Array.from(uniqueCategories).sort()
+    // Combine custom categories and categories from cheat sheets
+    const fromSheets = cheatSheets.value
+      .map((sheet) => sheet.category)
+      .filter((category) => category.trim())
+    const allCategories = new Set([...customCategories.value, ...fromSheets])
+    return Array.from(allCategories).sort()
   })
 
   const categoryCounts = computed(() => {
@@ -68,6 +73,28 @@ export const useCheatSheetsStore = defineStore('cheatSheets', () => {
 
   const saveToStorage = () => {
     storage.setItem(cheatSheets.value)
+  }
+
+  const saveCategoriesToStorage = () => {
+    categoriesStorage.setItem(customCategories.value)
+  }
+
+  const addCategory = (category: string): void => {
+    const trimmed = category.trim()
+    if (!trimmed) return
+    if (customCategories.value.includes(trimmed)) return
+
+    customCategories.value.push(trimmed)
+    customCategories.value.sort()
+    saveCategoriesToStorage()
+  }
+
+  const deleteCategory = (category: string): void => {
+    const index = customCategories.value.indexOf(category)
+    if (index === -1) return
+
+    customCategories.value.splice(index, 1)
+    saveCategoriesToStorage()
   }
 
   const addCheatSheet = (input: CheatSheetInput): CheatSheet => {
@@ -149,5 +176,7 @@ export const useCheatSheetsStore = defineStore('cheatSheets', () => {
     setSearchQuery,
     clearSearch,
     setActiveCategory,
+    addCategory,
+    deleteCategory,
   }
 })

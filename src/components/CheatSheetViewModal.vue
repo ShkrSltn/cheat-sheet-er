@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { CheatSheet } from '@/types'
 import CodeHighlight from './CodeHighlight.vue'
+import { useCategoryColors } from '@/composables/useCategoryColors'
 
 interface Props {
   isOpen: boolean
@@ -12,6 +13,8 @@ defineProps<Props>()
 const emit = defineEmits<{
   close: []
 }>()
+
+const { getCategoryStyles } = useCategoryColors()
 
 const formatDate = (isoDate: string) => {
   return new Date(isoDate).toLocaleDateString('en-US', {
@@ -71,10 +74,12 @@ const formatDate = (isoDate: string) => {
             </div>
           </div>
 
-          <div
-            class="flex items-center gap-4 pt-4 border-t border-[var(--color-border)] text-sm text-[var(--color-text-primary)] opacity-70"
-          >
-            <span v-if="cheatSheet.category" class="flex items-center gap-2">
+          <div class="flex items-center gap-4 pt-4 border-t border-[var(--color-border)] text-sm">
+            <span
+              v-if="cheatSheet.category"
+              class="px-3 py-1.5 rounded-lg font-medium border transition-all category-badge flex items-center gap-2"
+              :style="getCategoryStyles(cheatSheet.category)"
+            >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
@@ -85,7 +90,7 @@ const formatDate = (isoDate: string) => {
               </svg>
               {{ cheatSheet.category }}
             </span>
-            <span class="flex items-center gap-2">
+            <span class="flex items-center gap-2 text-[var(--color-text-primary)] opacity-70">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"

@@ -10,6 +10,7 @@ import EmptyState from '@/components/EmptyState.vue'
 import CheatSheetModal from '@/components/CheatSheetModal.vue'
 import CheatSheetViewModal from '@/components/CheatSheetViewModal.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
+import CategoryDialog from '@/components/CategoryDialog.vue'
 import { useCheatSheetsStore } from '@/stores/cheatSheets'
 import type { CheatSheet } from '@/types'
 
@@ -27,10 +28,14 @@ const {
 
 const isModalOpen = ref(false)
 const isViewModalOpen = ref(false)
+const isCategoryDialogOpen = ref(false)
 const editingCheatSheet = ref<CheatSheet | null>(null)
 const viewingCheatSheet = ref<CheatSheet | null>(null)
 const isDeleteDialogOpen = ref(false)
 const deletingId = ref<string | null>(null)
+const isDeleteCategoryDialogOpen = ref(false)
+const deletingCategory = ref<string | null>(null)
+const initialCategory = ref<string>('')
 
 const hasNoCheatSheets = computed(
   () =>
@@ -47,7 +52,53 @@ const handleCategoryChange = (category: string | null) => {
 
 const handleCreate = () => {
   editingCheatSheet.value = null
+  initialCategory.value = ''
   isModalOpen.value = true
+}
+
+const handleCreateInCategory = (category: string) => {
+  editingCheatSheet.value = null
+  initialCategory.value = category
+  isModalOpen.value = true
+}
+
+const handleCreateCategory = () => {
+  isCategoryDialogOpen.value = true
+}
+
+const handleCategorySave = (category: string) => {
+  store.addCategory(category)
+  isCategoryDialogOpen.value = false
+  toast.success(`Category "${category}" created`)
+}
+
+const handleCloseCategoryDialog = () => {
+  isCategoryDialogOpen.value = false
+}
+
+const handleDeleteCategoryRequest = (category: string) => {
+  deletingCategory.value = category
+  isDeleteCategoryDialogOpen.value = true
+}
+
+const handleDeleteCategoryConfirm = () => {
+  if (deletingCategory.value) {
+    store.deleteCategory(deletingCategory.value)
+
+    // If we were viewing this category, switch to "All"
+    if (activeCategory.value === deletingCategory.value) {
+      store.setActiveCategory(null)
+    }
+
+    toast.success(`Category "${deletingCategory.value}" deleted`)
+    deletingCategory.value = null
+  }
+  isDeleteCategoryDialogOpen.value = false
+}
+
+const handleDeleteCategoryCancel = () => {
+  deletingCategory.value = null
+  isDeleteCategoryDialogOpen.value = false
 }
 
 const handleView = (id: string) => {
@@ -112,12 +163,13 @@ const handleSave = (data: {
 const handleCloseModal = () => {
   isModalOpen.value = false
   editingCheatSheet.value = null
+  initialCategory.value = ''
 }
 </script>
 
 <template>
   <div class="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
-    <AppHeader @create="handleCreate" />
+    <AppHeader />
 
     <main class="max-w-7xl mx-auto px-6 py-8">
       <SearchBar :model-value="searchQuery" @update:model-value="handleSearch" />
@@ -128,6 +180,9 @@ const handleCloseModal = () => {
         :total-count="cheatSheets.length"
         :category-counts="categoryCounts"
         @update:active-category="handleCategoryChange"
+        @create-in-category="handleCreateInCategory"
+        @create-category="handleCreateCategory"
+        @delete-category="handleDeleteCategoryRequest"
       />
 
       <div class="grid grid-cols-12 gap-6" style="grid-auto-rows: min-content">
@@ -178,6 +233,7 @@ const handleCloseModal = () => {
     <CheatSheetModal
       :is-open="isModalOpen"
       :cheat-sheet="editingCheatSheet"
+      :initial-category="initialCategory"
       @close="handleCloseModal"
       @save="handleSave"
     />
@@ -197,6 +253,24 @@ const handleCloseModal = () => {
       :is-danger="true"
       @confirm="handleDeleteConfirm"
       @cancel="handleDeleteCancel"
+    />
+
+    <CategoryDialog
+      :is-open="isCategoryDialogOpen"
+      :existing-categories="categories"
+      @close="handleCloseCategoryDialog"
+      @save="handleCategorySave"
+    />
+
+    <ConfirmDialog
+      :is-open="isDeleteCategoryDialogOpen"
+      title="Delete Category"
+      :message="`Are you sure you want to delete the category '${deletingCategory}'? Cheat sheets in this category will not be deleted.`"
+      confirm-text="Delete"
+      cancel-text="Cancel"
+      :is-danger="true"
+      @confirm="handleDeleteCategoryConfirm"
+      @cancel="handleDeleteCategoryCancel"
     />
   </div>
 </template>

@@ -10,6 +10,23 @@
   --color-border-hover: #715a5a;
 }
 
+body {
+  font-family:
+    'Montserrat',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+}
+
+code,
+pre,
+textarea[class*='font-mono'],
+.font-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--color-bg-accent) var(--color-bg-secondary);

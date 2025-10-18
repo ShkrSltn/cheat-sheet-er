@@ -5,8 +5,10 @@ import { useToast } from 'vue-toastification'
 import type { CheatSheet } from '@/types'
 import CodeHighlight from './CodeHighlight.vue'
 import { useCheatSheetsStore } from '@/stores/cheatSheets'
+import { useCategoryColors } from '@/composables/useCategoryColors'
 
 const toast = useToast()
+const { getCategoryStyles, getCategoryColor } = useCategoryColors()
 
 interface Props {
   cheatSheet: CheatSheet
@@ -141,22 +143,41 @@ const gridColumnClass = computed(() => {
   if (size === 'medium') return 'col-span-full md:col-span-6 lg:col-span-4'
   return 'col-span-full md:col-span-4 lg:col-span-3' // small
 })
+
+// Get category colors for card styling
+const cardColors = computed(() => {
+  if (!props.cheatSheet.category) return null
+  return getCategoryColor(props.cheatSheet.category)
+})
+
+const cardStyle = computed(() => {
+  if (!cardColors.value) return {}
+  return {
+    borderColor: cardColors.value.border,
+  }
+})
+
+const titleStyle = computed(() => {
+  if (!cardColors.value) return {}
+  return {
+    color: cardColors.value.text,
+  }
+})
 </script>
 
 <template>
   <div
     :class="[
       'rounded-lg p-6 bg-[var(--color-bg-secondary)] border transition-colors group h-fit',
-      isEditing
-        ? 'border-[var(--color-bg-accent)]'
-        : 'border-[var(--color-border)] hover:border-[var(--color-border-hover)]',
+      isEditing ? 'border-[var(--color-bg-accent)]' : '',
       gridColumnClass,
     ]"
+    :style="!isEditing ? cardStyle : {}"
   >
     <!-- View Mode -->
     <template v-if="!isEditing">
       <div class="flex items-start justify-between mb-4">
-        <h3 class="text-lg font-medium text-[var(--color-text-primary)] flex-1 break-words">
+        <h3 class="text-lg font-medium flex-1 break-words transition-colors" :style="titleStyle">
           {{ cheatSheet.title }}
         </h3>
         <div class="flex gap-2 ml-2 flex-shrink-0">
@@ -224,7 +245,8 @@ const gridColumnClass = computed(() => {
         <span>{{ formatDate(cheatSheet.updatedAt) }}</span>
         <span
           v-if="cheatSheet.category"
-          class="px-2 py-1 rounded text-xs bg-[var(--color-bg-accent)] text-[var(--color-text-primary)]"
+          class="px-2 py-1 rounded text-xs font-medium border transition-all category-tag"
+          :style="getCategoryStyles(cheatSheet.category)"
         >
           {{ cheatSheet.category }}
         </span>
@@ -315,5 +337,9 @@ const gridColumnClass = computed(() => {
   line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.category-tag {
+  opacity: 1 !important;
 }
 </style>

@@ -7,6 +7,7 @@ import { useCheatSheetsStore } from '@/stores/cheatSheets'
 interface Props {
   isOpen: boolean
   cheatSheet?: CheatSheet | null
+  initialCategory?: string
 }
 
 const props = defineProps<Props>()
@@ -59,7 +60,7 @@ watch(
         form.value = {
           title: '',
           description: '',
-          category: '',
+          category: props.initialCategory || '',
           content: '',
         }
         isEditing.value = false
@@ -83,8 +84,8 @@ const validateForm = (): boolean => {
     errors.value.description = 'Description must be less than 200 characters'
   }
 
-  if (form.value.category.trim().length > 50) {
-    errors.value.category = 'Category must be less than 50 characters'
+  if (!form.value.category.trim()) {
+    errors.value.category = 'Category is required'
   }
 
   if (!form.value.content.trim()) {
@@ -167,20 +168,34 @@ const handleClose = () => {
                 <label class="block text-xs font-medium mb-1 text-[var(--color-text-primary)]">
                   Category
                 </label>
-                <input
+                <!-- Fixed category when adding to specific category -->
+                <div
+                  v-if="initialCategory"
+                  class="w-full rounded px-2 py-1.5 text-sm bg-[var(--color-bg-primary)] border border-[var(--color-border)] text-[var(--color-text-primary)] opacity-70"
+                >
+                  {{ form.category }}
+                </div>
+                <!-- Category selection when creating from scratch -->
+                <select
+                  v-else
                   v-model="form.category"
-                  type="text"
-                  list="categories-list"
-                  class="w-full rounded px-2 py-1.5 text-sm bg-[var(--color-bg-primary)] border text-[var(--color-text-primary)] placeholder:text-[var(--color-text-secondary)] transition-colors"
+                  class="w-full rounded px-2 py-1.5 text-sm bg-[var(--color-bg-primary)] border text-[var(--color-text-primary)] transition-colors"
                   :class="errors.category ? 'border-red-500' : 'border-[var(--color-border)]'"
-                  placeholder="JavaScript, CSS..."
-                  @input="errors.category = ''"
-                />
-                <datalist id="categories-list">
-                  <option v-for="category in categories" :key="category" :value="category" />
-                </datalist>
+                  @change="errors.category = ''"
+                >
+                  <option value="" disabled>Select a category</option>
+                  <option v-for="category in categories" :key="category" :value="category">
+                    {{ category }}
+                  </option>
+                </select>
                 <p v-if="errors.category" class="text-red-500 text-xs mt-0.5">
                   {{ errors.category }}
+                </p>
+                <p
+                  v-if="!initialCategory && categories.length === 0"
+                  class="text-[var(--color-text-secondary)] text-xs mt-1"
+                >
+                  Create a category first using "New Category" button
                 </p>
               </div>
             </div>
