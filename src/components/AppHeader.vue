@@ -23,18 +23,26 @@ const handleLogout = () => {
 const handleProfile = () => {
   router.push('/profile')
 }
+
+const handleLogoClick = () => {
+  if (isAuthenticated.value) {
+    router.push('/dashboard')
+  } else {
+    router.push('/')
+  }
+}
 </script>
 
 <template>
   <header class="border-b border-[var(--color-border)]">
     <div class="max-w-7xl mx-auto px-6 py-4">
       <div class="flex items-center justify-between">
-        <div>
+        <button @click="handleLogoClick" class="text-left hover:opacity-80 transition-opacity">
           <h1 class="text-2xl font-light text-[var(--color-text-primary)]">Notareon</h1>
           <p class="text-sm mt-1 text-[var(--color-text-primary)] opacity-80">
             Your personal cheat sheets collection
           </p>
-        </div>
+        </button>
 
         <!-- Authentication Section -->
         <div v-if="!isAuthenticated" class="flex items-center space-x-4">

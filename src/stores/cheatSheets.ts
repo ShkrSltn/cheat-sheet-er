@@ -89,12 +89,33 @@ export const useCheatSheetsStore = defineStore('cheatSheets', () => {
     saveCategoriesToStorage()
   }
 
-  const deleteCategory = (category: string): void => {
+  const deleteCategory = (category: string): boolean => {
     const index = customCategories.value.indexOf(category)
-    if (index === -1) return
+    if (index === -1) return false
+
+    // Check if there are any cheat sheets using this category
+    const hasCheatSheets = cheatSheets.value.some((sheet) => sheet.category === category)
+    if (hasCheatSheets) {
+      return false // Cannot delete category with cheat sheets
+    }
 
     customCategories.value.splice(index, 1)
     saveCategoriesToStorage()
+    return true
+  }
+
+  const forceDeleteCategory = (category: string): boolean => {
+    const index = customCategories.value.indexOf(category)
+    if (index === -1) return false
+
+    // Delete all cheat sheets in this category
+    cheatSheets.value = cheatSheets.value.filter((sheet) => sheet.category !== category)
+    saveToStorage()
+
+    // Delete the category
+    customCategories.value.splice(index, 1)
+    saveCategoriesToStorage()
+    return true
   }
 
   const addCheatSheet = (input: CheatSheetInput): CheatSheet => {
@@ -178,5 +199,6 @@ export const useCheatSheetsStore = defineStore('cheatSheets', () => {
     setActiveCategory,
     addCategory,
     deleteCategory,
+    forceDeleteCategory,
   }
 })

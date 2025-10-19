@@ -25,6 +25,10 @@ const {
   categoryCounts,
 } = storeToRefs(store)
 
+// Debug: check if forceDeleteCategory is available
+console.log('Store instance:', store)
+console.log('forceDeleteCategory method:', store.forceDeleteCategory)
+
 const isModalOpen = ref(false)
 const isViewModalOpen = ref(false)
 const isCategoryDialogOpen = ref(false)
@@ -34,6 +38,8 @@ const isDeleteDialogOpen = ref(false)
 const deletingId = ref<string | null>(null)
 const isDeleteCategoryDialogOpen = ref(false)
 const deletingCategory = ref<string | null>(null)
+const isForceDeleteDialogOpen = ref(false)
+const forceDeletingCategory = ref<string | null>(null)
 const initialCategory = ref<string>('')
 
 const hasNoCheatSheets = computed(
@@ -76,20 +82,31 @@ const handleCloseCategoryDialog = () => {
 }
 
 const handleDeleteCategoryRequest = (category: string) => {
-  deletingCategory.value = category
-  isDeleteCategoryDialogOpen.value = true
+  // Check if category has cheat sheets
+  const hasCheatSheets = cheatSheets.value.some((sheet) => sheet.category === category)
+
+  if (hasCheatSheets) {
+    forceDeletingCategory.value = category
+    isForceDeleteDialogOpen.value = true
+  } else {
+    deletingCategory.value = category
+    isDeleteCategoryDialogOpen.value = true
+  }
 }
 
 const handleDeleteCategoryConfirm = () => {
   if (deletingCategory.value) {
-    store.deleteCategory(deletingCategory.value)
+    const success = store.deleteCategory(deletingCategory.value)
 
-    // If we were viewing this category, switch to "All"
-    if (activeCategory.value === deletingCategory.value) {
-      store.setActiveCategory(null)
+    if (success) {
+      // If we were viewing this category, switch to "All"
+      if (activeCategory.value === deletingCategory.value) {
+        store.setActiveCategory(null)
+      }
+      toast.success(`Category "${deletingCategory.value}" deleted`)
+    } else {
+      toast.error(`Cannot delete category "${deletingCategory.value}" - it contains cheat sheets`)
     }
-
-    toast.success(`Category "${deletingCategory.value}" deleted`)
     deletingCategory.value = null
   }
   isDeleteCategoryDialogOpen.value = false
@@ -98,6 +115,31 @@ const handleDeleteCategoryConfirm = () => {
 const handleDeleteCategoryCancel = () => {
   deletingCategory.value = null
   isDeleteCategoryDialogOpen.value = false
+}
+
+const handleForceDeleteCategoryConfirm = () => {
+  if (forceDeletingCategory.value) {
+    console.log('Store methods:', Object.keys(store))
+    console.log('forceDeleteCategory exists:', typeof store.forceDeleteCategory)
+    const success = store.forceDeleteCategory(forceDeletingCategory.value)
+
+    if (success) {
+      // If we were viewing this category, switch to "All"
+      if (activeCategory.value === forceDeletingCategory.value) {
+        store.setActiveCategory(null)
+      }
+      toast.success(`Category "${forceDeletingCategory.value}" and all its cheat sheets deleted`)
+    } else {
+      toast.error(`Failed to delete category "${forceDeletingCategory.value}"`)
+    }
+    forceDeletingCategory.value = null
+  }
+  isForceDeleteDialogOpen.value = false
+}
+
+const handleForceDeleteCategoryCancel = () => {
+  forceDeletingCategory.value = null
+  isForceDeleteDialogOpen.value = false
 }
 
 const handleView = (id: string) => {
@@ -262,11 +304,22 @@ const handleCloseModal = () => {
   <ConfirmDialog
     :is-open="isDeleteCategoryDialogOpen"
     title="Delete Category"
-    :message="`Are you sure you want to delete the category '${deletingCategory}'? Cheat sheets in this category will not be deleted.`"
+    :message="`Are you sure you want to delete the category '${deletingCategory}'?`"
     confirm-text="Delete"
     cancel-text="Cancel"
     :is-danger="true"
     @confirm="handleDeleteCategoryConfirm"
     @cancel="handleDeleteCategoryCancel"
+  />
+
+  <ConfirmDialog
+    :is-open="isForceDeleteDialogOpen"
+    title="Delete Category with Cheat Sheets"
+    :message="`The category '${forceDeletingCategory}' contains cheat sheets. Deleting it will also delete all cheat sheets in this category. This action cannot be undone. Are you sure?`"
+    confirm-text="Delete All"
+    cancel-text="Cancel"
+    :is-danger="true"
+    @confirm="handleForceDeleteCategoryConfirm"
+    @cancel="handleForceDeleteCategoryCancel"
   />
 </template>
