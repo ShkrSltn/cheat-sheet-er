@@ -1,6 +1,8 @@
 import type { CheatSheet, CheatSheetInput, CheatSheetUpdate, User, LoginCredentials, RegisterCredentials } from '@/types'
 
-const API_BASE = '/api'
+const API_BASE = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}`
+  : '/api'
 
 interface AuthResponse {
   access_token: string
