@@ -5,10 +5,12 @@ import 'vue-toastification/dist/index.css'
 import App from './App.vue'
 import router from './router'
 import './assets/main.css'
+import { useAuthStore } from './stores/auth'
 
 const app = createApp(App)
 
-app.use(createPinia())
+const pinia = createPinia()
+app.use(pinia)
 app.use(router)
 app.use(Toast, {
   position: 'bottom-right',
@@ -27,4 +29,8 @@ app.use(Toast, {
   newestOnTop: true,
 })
 
-app.mount('#app')
+// Initialize authentication before mounting
+const authStore = useAuthStore()
+authStore.initAuth().then(() => {
+  app.mount('#app')
+})

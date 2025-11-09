@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useToast } from 'vue-toastification'
 import SearchBar from '@/components/SearchBar.vue'
 import CategoryTabs from '@/components/CategoryTabs.vue'
 import CheatSheetCard from '@/components/CheatSheetCard.vue'
 import EmptyState from '@/components/EmptyState.vue'
+import CategoryHint from '@/components/CategoryHint.vue'
 import CheatSheetModal from '@/components/CheatSheetModal.vue'
 import CheatSheetViewModal from '@/components/CheatSheetViewModal.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
@@ -23,11 +24,21 @@ const {
   activeCategory,
   cheatSheets,
   categoryCounts,
+  isLoading,
 } = storeToRefs(store)
 
-// Debug: check if forceDeleteCategory is available
-console.log('Store instance:', store)
-console.log('forceDeleteCategory method:', store.forceDeleteCategory)
+// Initialize data on mount
+onMounted(async () => {
+  try {
+    await Promise.all([
+      store.fetchCheatSheets(),
+      store.fetchCategories(),
+    ])
+  } catch (error) {
+    toast.error('Failed to load data')
+    console.error('Failed to initialize data:', error)
+  }
+})
 
 const isModalOpen = ref(false)
 const isViewModalOpen = ref(false)
@@ -46,6 +57,8 @@ const hasNoCheatSheets = computed(
   () =>
     filteredCheatSheets.value.length === 0 && !searchQuery.value.trim() && !activeCategory.value,
 )
+
+const hasNoCategories = computed(() => categories.value.length === 0)
 
 const handleSearch = (query: string) => {
   store.setSearchQuery(query)
@@ -71,10 +84,14 @@ const handleCreateCategory = () => {
   isCategoryDialogOpen.value = true
 }
 
-const handleCategorySave = (category: string) => {
-  store.addCategory(category)
-  isCategoryDialogOpen.value = false
-  toast.success(`Category "${category}" created`)
+const handleCategorySave = async (category: string) => {
+  try {
+    await store.addCategory(category)
+    isCategoryDialogOpen.value = false
+    toast.success(`Category "${category}" created`)
+  } catch (error) {
+    toast.error('Failed to create category')
+  }
 }
 
 const handleCloseCategoryDialog = () => {
@@ -94,9 +111,9 @@ const handleDeleteCategoryRequest = (category: string) => {
   }
 }
 
-const handleDeleteCategoryConfirm = () => {
+const handleDeleteCategoryConfirm = async () => {
   if (deletingCategory.value) {
-    const success = store.deleteCategory(deletingCategory.value)
+    const success = await store.deleteCategory(deletingCategory.value)
 
     if (success) {
       // If we were viewing this category, switch to "All"
@@ -117,11 +134,9 @@ const handleDeleteCategoryCancel = () => {
   isDeleteCategoryDialogOpen.value = false
 }
 
-const handleForceDeleteCategoryConfirm = () => {
+const handleForceDeleteCategoryConfirm = async () => {
   if (forceDeletingCategory.value) {
-    console.log('Store methods:', Object.keys(store))
-    console.log('forceDeleteCategory exists:', typeof store.forceDeleteCategory)
-    const success = store.forceDeleteCategory(forceDeletingCategory.value)
+    const success = await store.forceDeleteCategory(forceDeletingCategory.value)
 
     if (success) {
       // If we were viewing this category, switch to "All"
@@ -160,10 +175,14 @@ const handleDeleteRequest = (id: string) => {
   isDeleteDialogOpen.value = true
 }
 
-const handleDeleteConfirm = () => {
+const handleDeleteConfirm = async () => {
   if (deletingId.value) {
-    store.deleteCheatSheet(deletingId.value)
-    toast.success('Cheat sheet deleted')
+    try {
+      await store.deleteCheatSheet(deletingId.value)
+      toast.success('Cheat sheet deleted')
+    } catch (error) {
+      toast.error('Failed to delete cheat sheet')
+    }
     deletingId.value = null
   }
   isDeleteDialogOpen.value = false
@@ -174,31 +193,35 @@ const handleDeleteCancel = () => {
   isDeleteDialogOpen.value = false
 }
 
-const handleSave = (data: {
+const handleSave = async (data: {
   title: string
   description: string
   category: string
   content: string
 }) => {
-  if (editingCheatSheet.value) {
-    store.updateCheatSheet(editingCheatSheet.value.id, {
-      title: data.title,
-      description: data.description,
-      category: data.category,
-      content: data.content,
-    })
-    toast.success('Cheat sheet updated!')
-  } else {
-    store.addCheatSheet({
-      title: data.title,
-      description: data.description,
-      category: data.category,
-      content: data.content,
-    })
-    toast.success('Cheat sheet created!')
+  try {
+    if (editingCheatSheet.value) {
+      await store.updateCheatSheet(editingCheatSheet.value.id, {
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        content: data.content,
+      })
+      toast.success('Cheat sheet updated!')
+    } else {
+      await store.addCheatSheet({
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        content: data.content,
+      })
+      toast.success('Cheat sheet created!')
+    }
+    isModalOpen.value = false
+    editingCheatSheet.value = null
+  } catch (error) {
+    toast.error('Failed to save cheat sheet')
   }
-  isModalOpen.value = false
-  editingCheatSheet.value = null
 }
 
 const handleCloseModal = () => {
@@ -233,7 +256,11 @@ const handleCloseModal = () => {
         @delete="handleDeleteRequest"
       />
 
-      <div v-if="hasNoCheatSheets" class="col-span-full">
+      <div v-if="hasNoCategories" class="col-span-full">
+        <CategoryHint @create-category="handleCreateCategory" />
+      </div>
+
+      <div v-else-if="hasNoCheatSheets" class="col-span-full">
         <EmptyState @create="handleCreate" />
       </div>
     </div>

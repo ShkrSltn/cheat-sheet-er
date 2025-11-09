@@ -1,17 +1,13 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import type { User, LoginCredentials, RegisterCredentials, AuthState } from '@/types'
-import { useLocalStorage } from '@/composables/useLocalStorage'
-
-const AUTH_STORAGE_KEY = 'auth-user'
+import { api } from '@/services/api'
 
 export const useAuthStore = defineStore('auth', () => {
-  const userStorage = useLocalStorage<User | null>(AUTH_STORAGE_KEY, null)
-
-  const user = ref<User | null>(userStorage.getItem())
+  const user = ref<User | null>(null)
   const isLoading = ref(false)
 
-  const isAuthenticated = computed(() => !!user.value)
+  const isAuthenticated = computed(() => !!user.value && !!api.getToken())
 
   const authState = computed(
     (): AuthState => ({
@@ -21,16 +17,18 @@ export const useAuthStore = defineStore('auth', () => {
     }),
   )
 
-  const saveUserToStorage = () => {
-    userStorage.setItem(user.value)
-  }
-
-  const generateId = (): string => {
-    return crypto.randomUUID()
-  }
-
-  const getCurrentTimestamp = (): string => {
-    return new Date().toISOString()
+  // Initialize user from token if available
+  const initAuth = async () => {
+    const token = api.getToken()
+    if (token && !user.value) {
+      try {
+        const profile = await api.getProfile()
+        user.value = profile
+      } catch (error) {
+        // Token is invalid, clear it
+        api.setToken(null)
+      }
+    }
   }
 
   const login = async (
@@ -39,29 +37,19 @@ export const useAuthStore = defineStore('auth', () => {
     isLoading.value = true
 
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // For demo purposes, accept any email/password combination
-      // In a real app, this would validate against a backend
       if (!credentials.email || !credentials.password) {
         return { success: false, error: 'Email and password are required' }
       }
 
-      // Create user object (in real app, this would come from API)
-      const newUser: User = {
-        id: generateId(),
-        email: credentials.email,
-        name: credentials.email.split('@')[0] || 'User', // Use email prefix as name
-        createdAt: getCurrentTimestamp(),
-      }
+      const response = await api.login(credentials)
 
-      user.value = newUser
-      saveUserToStorage()
+      api.setToken(response.access_token)
+      user.value = response.user
 
       return { success: true }
-    } catch {
-      return { success: false, error: 'Login failed. Please try again.' }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Login failed. Please try again.'
+      return { success: false, error: message }
     } finally {
       isLoading.value = false
     }
@@ -73,9 +61,6 @@ export const useAuthStore = defineStore('auth', () => {
     isLoading.value = true
 
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
       // Validate input
       if (!credentials.email || !credentials.password || !credentials.name) {
         return { success: false, error: 'All fields are required' }
@@ -89,20 +74,15 @@ export const useAuthStore = defineStore('auth', () => {
         return { success: false, error: 'Password must be at least 6 characters' }
       }
 
-      // Create user object (in real app, this would be sent to API)
-      const newUser: User = {
-        id: generateId(),
-        email: credentials.email,
-        name: credentials.name,
-        createdAt: getCurrentTimestamp(),
-      }
+      const response = await api.register(credentials)
 
-      user.value = newUser
-      saveUserToStorage()
+      api.setToken(response.access_token)
+      user.value = response.user
 
       return { success: true }
-    } catch {
-      return { success: false, error: 'Registration failed. Please try again.' }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Registration failed. Please try again.'
+      return { success: false, error: message }
     } finally {
       isLoading.value = false
     }
@@ -110,12 +90,12 @@ export const useAuthStore = defineStore('auth', () => {
 
   const logout = () => {
     user.value = null
-    saveUserToStorage()
+    api.setToken(null)
   }
 
   const clearAuth = () => {
     user.value = null
-    userStorage.removeItem()
+    api.setToken(null)
   }
 
   return {
@@ -126,6 +106,7 @@ export const useAuthStore = defineStore('auth', () => {
     authState,
 
     // Actions
+    initAuth,
     login,
     register,
     logout,

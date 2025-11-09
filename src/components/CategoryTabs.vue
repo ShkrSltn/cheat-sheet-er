@@ -72,7 +72,7 @@ const handleDeleteCategory = (event: Event, category: string) => {
 
       <div class="flex gap-2 flex-shrink-0">
         <button
-          v-if="activeCategory"
+          v-if="activeCategory && categories.length > 0"
           class="px-3 py-2 rounded-lg flex items-center gap-2 transition-all border text-sm whitespace-nowrap quick-add-btn"
           :style="getCategoryStyles(activeCategory, true)"
           :title="`Add to ${activeCategory}`"

@@ -1,19 +1,14 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import type { CheatSheet, CheatSheetInput, CheatSheetUpdate } from '@/types'
-import { useLocalStorage } from '@/composables/useLocalStorage'
-
-const STORAGE_KEY = 'cheat-sheets'
-const CATEGORIES_KEY = 'categories'
+import { api } from '@/services/api'
 
 export const useCheatSheetsStore = defineStore('cheatSheets', () => {
-  const storage = useLocalStorage<CheatSheet[]>(STORAGE_KEY, [])
-  const categoriesStorage = useLocalStorage<string[]>(CATEGORIES_KEY, [])
-
-  const cheatSheets = ref<CheatSheet[]>(storage.getItem())
-  const customCategories = ref<string[]>(categoriesStorage.getItem())
+  const cheatSheets = ref<CheatSheet[]>([])
+  const customCategories = ref<string[]>([])
   const searchQuery = ref('')
   const activeCategory = ref<string | null>(null)
+  const isLoading = ref(false)
 
   // Getters
   const filteredCheatSheets = computed(() => {
@@ -63,107 +58,107 @@ export const useCheatSheetsStore = defineStore('cheatSheets', () => {
   }
 
   // Actions
-  const generateId = (): string => {
-    return crypto.randomUUID()
+  const fetchCheatSheets = async (): Promise<void> => {
+    isLoading.value = true
+    try {
+      const sheets = await api.getCheatSheets()
+      cheatSheets.value = sheets
+    } catch (error) {
+      console.error('Failed to fetch cheat sheets:', error)
+      throw error
+    } finally {
+      isLoading.value = false
+    }
   }
 
-  const getCurrentTimestamp = (): string => {
-    return new Date().toISOString()
+  const fetchCategories = async (): Promise<void> => {
+    try {
+      const cats = await api.getCategories()
+      customCategories.value = cats
+    } catch (error) {
+      console.error('Failed to fetch categories:', error)
+      throw error
+    }
   }
 
-  const saveToStorage = () => {
-    storage.setItem(cheatSheets.value)
-  }
-
-  const saveCategoriesToStorage = () => {
-    categoriesStorage.setItem(customCategories.value)
-  }
-
-  const addCategory = (category: string): void => {
+  const addCategory = async (category: string): Promise<void> => {
     const trimmed = category.trim()
     if (!trimmed) return
     if (customCategories.value.includes(trimmed)) return
 
-    customCategories.value.push(trimmed)
-    customCategories.value.sort()
-    saveCategoriesToStorage()
+    try {
+      await api.createCategory(trimmed)
+      await fetchCategories()
+    } catch (error) {
+      console.error('Failed to add category:', error)
+      throw error
+    }
   }
 
-  const deleteCategory = (category: string): boolean => {
-    const index = customCategories.value.indexOf(category)
-    if (index === -1) return false
-
+  const deleteCategory = async (category: string): Promise<boolean> => {
     // Check if there are any cheat sheets using this category
     const hasCheatSheets = cheatSheets.value.some((sheet) => sheet.category === category)
     if (hasCheatSheets) {
       return false // Cannot delete category with cheat sheets
     }
 
-    customCategories.value.splice(index, 1)
-    saveCategoriesToStorage()
-    return true
+    try {
+      await api.deleteCategory(category, false)
+      await fetchCategories()
+      return true
+    } catch (error) {
+      console.error('Failed to delete category:', error)
+      return false
+    }
   }
 
-  const forceDeleteCategory = (category: string): boolean => {
-    const index = customCategories.value.indexOf(category)
-    if (index === -1) return false
-
-    // Delete all cheat sheets in this category
-    cheatSheets.value = cheatSheets.value.filter((sheet) => sheet.category !== category)
-    saveToStorage()
-
-    // Delete the category
-    customCategories.value.splice(index, 1)
-    saveCategoriesToStorage()
-    return true
+  const forceDeleteCategory = async (category: string): Promise<boolean> => {
+    try {
+      await api.deleteCategory(category, true)
+      await fetchCategories()
+      await fetchCheatSheets()
+      return true
+    } catch (error) {
+      console.error('Failed to force delete category:', error)
+      return false
+    }
   }
 
-  const addCheatSheet = (input: CheatSheetInput): CheatSheet => {
-    const timestamp = getCurrentTimestamp()
-    const newSheet: CheatSheet = {
-      id: generateId(),
-      ...input,
-      createdAt: timestamp,
-      updatedAt: timestamp,
+  const addCheatSheet = async (input: CheatSheetInput): Promise<CheatSheet> => {
+    try {
+      const newSheet = await api.createCheatSheet(input)
+      cheatSheets.value.unshift(newSheet)
+      return newSheet
+    } catch (error) {
+      console.error('Failed to add cheat sheet:', error)
+      throw error
     }
-
-    cheatSheets.value.unshift(newSheet)
-    saveToStorage()
-    return newSheet
   }
 
-  const updateCheatSheet = (id: string, updates: CheatSheetUpdate): void => {
-    const index = cheatSheets.value.findIndex((sheet) => sheet.id === id)
-
-    if (index === -1) {
-      console.error(`CheatSheet with id "${id}" not found`)
-      return
+  const updateCheatSheet = async (id: string, updates: CheatSheetUpdate): Promise<void> => {
+    try {
+      const updatedSheet = await api.updateCheatSheet(id, updates)
+      const index = cheatSheets.value.findIndex((sheet) => sheet.id === id)
+      if (index !== -1) {
+        cheatSheets.value[index] = updatedSheet
+      }
+    } catch (error) {
+      console.error('Failed to update cheat sheet:', error)
+      throw error
     }
-
-    const currentSheet = cheatSheets.value[index]!
-    cheatSheets.value[index] = {
-      id: currentSheet.id,
-      createdAt: currentSheet.createdAt,
-      title: updates.title ?? currentSheet.title,
-      description: updates.description ?? currentSheet.description,
-      category: updates.category ?? currentSheet.category,
-      content: updates.content ?? currentSheet.content,
-      updatedAt: getCurrentTimestamp(),
-    }
-
-    saveToStorage()
   }
 
-  const deleteCheatSheet = (id: string): void => {
-    const index = cheatSheets.value.findIndex((sheet) => sheet.id === id)
-
-    if (index === -1) {
-      console.error(`CheatSheet with id "${id}" not found`)
-      return
+  const deleteCheatSheet = async (id: string): Promise<void> => {
+    try {
+      await api.deleteCheatSheet(id)
+      const index = cheatSheets.value.findIndex((sheet) => sheet.id === id)
+      if (index !== -1) {
+        cheatSheets.value.splice(index, 1)
+      }
+    } catch (error) {
+      console.error('Failed to delete cheat sheet:', error)
+      throw error
     }
-
-    cheatSheets.value.splice(index, 1)
-    saveToStorage()
   }
 
   const setSearchQuery = (query: string): void => {
@@ -183,6 +178,7 @@ export const useCheatSheetsStore = defineStore('cheatSheets', () => {
     cheatSheets: computed(() => cheatSheets.value),
     searchQuery: computed(() => searchQuery.value),
     activeCategory: computed(() => activeCategory.value),
+    isLoading: computed(() => isLoading.value),
 
     // Getters
     filteredCheatSheets,
@@ -191,6 +187,8 @@ export const useCheatSheetsStore = defineStore('cheatSheets', () => {
     getById,
 
     // Actions
+    fetchCheatSheets,
+    fetchCategories,
     addCheatSheet,
     updateCheatSheet,
     deleteCheatSheet,

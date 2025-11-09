@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
@@ -13,6 +13,17 @@ const { user } = storeToRefs(authStore)
 const { cheatSheets } = storeToRefs(cheatSheetsStore)
 
 const toast = useToast()
+
+// Load cheat sheets if not already loaded
+onMounted(async () => {
+  if (cheatSheets.value.length === 0) {
+    try {
+      await cheatSheetsStore.fetchCheatSheets()
+    } catch (error) {
+      console.error('Failed to load cheat sheets:', error)
+    }
+  }
+})
 
 const goHome = () => {
   router.push('/dashboard')
