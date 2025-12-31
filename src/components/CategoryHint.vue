@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { AppButton } from '@/components/shared'
+
 const emit = defineEmits<{
   createCategory: []
 }>()
@@ -21,12 +23,14 @@ const emit = defineEmits<{
       Before you can add cheat sheets, you need to create a category to organize them. Categories
       help you keep your cheat sheets organized and easy to find.
     </p>
-    <button
-      class="px-6 py-3 rounded-lg bg-[var(--color-primary)] text-white font-medium hover:bg-[var(--color-primary-hover)] transition-colors flex items-center gap-2 mx-auto"
-      @click="emit('createCategory')"
-    >
-      <font-awesome-icon icon="plus" class="w-4 h-4" />
-      Create Category
-    </button>
+    <div class="flex justify-center">
+      <AppButton
+        variant="primary"
+        icon="plus"
+        @click="emit('createCategory')"
+      >
+        Create Category
+      </AppButton>
+    </div>
   </div>
 </template>

@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useCheatSheetsStore } from '@/stores/cheatSheets'
+import { AppButton } from '@/components/shared'
 import type { CheatSheetModalProps, CheatSheetFormData } from '@/types/components'
 
 const props = defineProps<CheatSheetModalProps>()
@@ -205,19 +206,19 @@ const handleClose = (): void => {
             </div>
 
             <div class="flex justify-end gap-3 pt-4 flex-shrink-0">
-              <button
+              <AppButton
                 type="button"
-                class="px-4 py-2 rounded-lg bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] border border-[var(--color-border)] hover:opacity-80 transition-opacity"
+                variant="secondary"
                 @click="handleClose"
               >
                 Cancel
-              </button>
-              <button
+              </AppButton>
+              <AppButton
                 type="submit"
-                class="px-4 py-2 rounded-lg bg-[var(--color-bg-accent)] text-[var(--color-text-primary)] border border-[var(--color-bg-accent)] hover:opacity-80 transition-opacity"
+                variant="primary"
               >
                 {{ isEditing ? 'Save' : 'Create' }}
-              </button>
+              </AppButton>
             </div>
           </form>
         </div>

@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useNavigation } from '@/composables/useNavigation'
+import { AppButton } from '@/components/shared'
 import type { LoginCredentials } from '@/types'
 
 const authStore = useAuthStore()
@@ -41,13 +42,13 @@ const handleSubmit = async (): Promise<void> => {
     <div class="max-w-md w-full mx-4">
       <!-- Navigation -->
       <div class="mb-6">
-      <button
-        @click="goHome"
-        class="flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] px-3 py-2 rounded-md transition-colors"
-      >
-        <font-awesome-icon icon="arrow-left" class="w-5 h-5 mr-2" />
-        Back to Home
-      </button>
+        <AppButton
+          variant="ghost"
+          icon="arrow-left"
+          @click="goHome"
+        >
+          Back to Home
+        </AppButton>
       </div>
 
       <!-- Login Form -->
@@ -99,26 +100,29 @@ const handleSubmit = async (): Promise<void> => {
             {{ error }}
           </div>
 
-          <button
+          <AppButton
             type="submit"
+            variant="primary"
+            full-width
+            icon="sign-in-alt"
             :disabled="isSubmitting"
-            class="w-full border border-[var(--color-accent)] text-[var(--color-accent)] py-2 px-4 rounded-md hover:bg-[var(--color-accent)] hover:text-white focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center justify-center gap-2"
+            :loading="isSubmitting"
           >
-            <font-awesome-icon icon="sign-in-alt" class="w-4 h-4" />
-            <span v-if="isSubmitting">Signing in...</span>
-            <span v-else>Sign In</span>
-          </button>
+            <template #loading>Signing in...</template>
+            Sign In
+          </AppButton>
         </form>
 
         <div class="mt-6 text-center">
           <p class="text-[var(--color-text-secondary)]">
             Don't have an account?
-            <button
+            <AppButton
+              variant="link"
+              size="sm"
               @click="goToRegister"
-              class="text-emerald-400 hover:text-emerald-300 font-medium transition-colors"
             >
               Sign up
-            </button>
+            </AppButton>
           </p>
         </div>
       </div>

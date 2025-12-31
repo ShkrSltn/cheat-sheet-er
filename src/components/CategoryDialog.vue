@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import { AppButton } from '@/components/shared'
 import type { CategoryDialogProps } from '@/types/components'
 
 const props = defineProps<CategoryDialogProps>()
@@ -99,19 +100,19 @@ const handleClose = (): void => {
             </div>
 
             <div class="flex justify-end gap-3">
-              <button
+              <AppButton
                 type="button"
-                class="px-4 py-2 rounded-lg bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] border border-[var(--color-border)] hover:opacity-80 transition-opacity"
+                variant="secondary"
                 @click="handleClose"
               >
                 Cancel
-              </button>
-              <button
+              </AppButton>
+              <AppButton
                 type="submit"
-                class="px-4 py-2 rounded-lg bg-[var(--color-bg-accent)] text-[var(--color-text-primary)] border border-[var(--color-bg-accent)] hover:opacity-80 transition-opacity"
+                variant="primary"
               >
                 Create
-              </button>
+              </AppButton>
             </div>
           </form>
         </div>

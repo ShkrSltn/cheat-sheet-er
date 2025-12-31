@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
 import { useNavigation } from '@/composables/useNavigation'
+import { AppButton } from '@/components/shared'
 
 const authStore = useAuthStore()
 const { user, isAuthenticated } = storeToRefs(authStore)
@@ -37,20 +38,20 @@ const handleLogoClick = (): void => {
 
         <!-- Authentication Section -->
         <div v-if="!isAuthenticated" class="flex items-center space-x-4">
-          <button
+          <AppButton
+            variant="primary"
+            icon="sign-in-alt"
             @click="handleLogin"
-            class="border border-[var(--color-accent)] text-[var(--color-accent)] px-4 py-2 rounded-md hover:bg-[var(--color-accent)] hover:text-white transition-colors font-medium flex items-center gap-2"
           >
-            <font-awesome-icon icon="sign-in-alt" class="w-4 h-4" />
             Sign In
-          </button>
-          <button
+          </AppButton>
+          <AppButton
+            variant="emerald"
+            icon="user-plus"
             @click="handleRegister"
-            class="border border-emerald-400 text-emerald-400 px-4 py-2 rounded-md hover:bg-emerald-400 hover:text-white transition-colors font-medium flex items-center gap-2"
           >
-            <font-awesome-icon icon="user-plus" class="w-4 h-4" />
             Sign Up
-          </button>
+          </AppButton>
         </div>
 
         <!-- User Section -->

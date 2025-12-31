@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useNavigation } from '@/composables/useNavigation'
+import { AppButton } from '@/components/shared'
 
 const year = new Date().getFullYear()
 
@@ -20,20 +21,22 @@ const { navigateToLogin: goToLogin, navigateToRegister: goToRegister } = useNavi
             commands, and notes in one beautiful place.
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
+            <AppButton
+              variant="emerald"
+              size="lg"
+              icon="user-plus"
               @click="goToRegister"
-              class="border border-emerald-400 text-emerald-400 px-8 py-3 rounded-md hover:bg-emerald-400 hover:text-white transition-colors font-medium flex items-center justify-center gap-2 text-lg"
             >
-              <font-awesome-icon icon="user-plus" class="w-5 h-5" />
               Get Started
-            </button>
-            <button
+            </AppButton>
+            <AppButton
+              variant="primary"
+              size="lg"
+              icon="sign-in-alt"
               @click="goToLogin"
-              class="border border-[var(--color-accent)] text-[var(--color-accent)] px-8 py-3 rounded-md hover:bg-[var(--color-accent)] hover:text-white transition-colors font-medium flex items-center justify-center gap-2 text-lg"
             >
-              <font-awesome-icon icon="sign-in-alt" class="w-5 h-5" />
               Sign In
-            </button>
+            </AppButton>
           </div>
         </div>
       </div>
@@ -55,11 +58,12 @@ const { navigateToLogin: goToLogin, navigateToRegister: goToRegister } = useNavi
           <!-- Feature 1 -->
           <div class="text-center">
             <div
-              class="w-16 h-16 bg-[var(--color-accent)] bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-6"
+              class="w-16 h-16 bg-[var(--color-accent)] rounded-full flex items-center justify-center mx-auto mb-6"
+              style="background-color: rgba(var(--color-accent-rgb, 99, 102, 241), 0.1)"
             >
               <font-awesome-icon
                 icon="file-alt"
-                class="w-8 h-8 text-[var(--color-accent)]"
+                class="text-2xl text-[var(--color-accent)]"
               />
             </div>
             <h3 class="text-xl font-semibold text-[var(--color-text-primary)] mb-4">
@@ -74,11 +78,12 @@ const { navigateToLogin: goToLogin, navigateToRegister: goToRegister } = useNavi
           <!-- Feature 2 -->
           <div class="text-center">
             <div
-              class="w-16 h-16 bg-emerald-400 bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-6"
+              class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
+              style="background-color: rgba(52, 211, 153, 0.1)"
             >
               <font-awesome-icon
                 icon="search"
-                class="w-8 h-8 text-emerald-400"
+                class="text-2xl text-emerald-400"
               />
             </div>
             <h3 class="text-xl font-semibold text-[var(--color-text-primary)] mb-4">
@@ -93,11 +98,12 @@ const { navigateToLogin: goToLogin, navigateToRegister: goToRegister } = useNavi
           <!-- Feature 3 -->
           <div class="text-center">
             <div
-              class="w-16 h-16 bg-rose-400 bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-6"
+              class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
+              style="background-color: rgba(251, 113, 133, 0.1)"
             >
               <font-awesome-icon
                 icon="sliders"
-                class="w-8 h-8 text-rose-400"
+                class="text-2xl text-rose-400"
               />
             </div>
             <h3 class="text-xl font-semibold text-[var(--color-text-primary)] mb-4">
@@ -126,7 +132,7 @@ const { navigateToLogin: goToLogin, navigateToRegister: goToRegister } = useNavi
           <!-- Step 1 -->
           <div class="text-center">
             <div
-              class="w-12 h-12 bg-[var(--color-accent)] text-white rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-bold"
+              class="w-12 h-12 bg-indigo-500 text-white rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-bold"
             >
               1
             </div>
@@ -182,20 +188,22 @@ const { navigateToLogin: goToLogin, navigateToRegister: goToRegister } = useNavi
           Join thousands of developers who keep their knowledge organized with Notareon.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <button
+          <AppButton
+            variant="emerald"
+            size="lg"
+            icon="user-plus"
             @click="goToRegister"
-            class="border border-emerald-400 text-emerald-400 px-8 py-3 rounded-md hover:bg-emerald-400 hover:text-white transition-colors font-medium flex items-center justify-center gap-2 text-lg"
           >
-            <font-awesome-icon icon="user-plus" class="w-5 h-5" />
             Start Free Today
-          </button>
-          <button
+          </AppButton>
+          <AppButton
+            variant="primary"
+            size="lg"
+            icon="sign-in-alt"
             @click="goToLogin"
-            class="border border-[var(--color-accent)] text-[var(--color-accent)] px-8 py-3 rounded-md hover:bg-[var(--color-accent)] hover:text-white transition-colors font-medium flex items-center justify-center gap-2 text-lg"
           >
-            <font-awesome-icon icon="sign-in-alt" class="w-5 h-5" />
             Sign In
-          </button>
+          </AppButton>
         </div>
       </div>
     </section>

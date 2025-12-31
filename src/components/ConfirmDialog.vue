@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { AppButton } from '@/components/shared'
 import type { ConfirmDialogProps } from '@/types/components'
 
 withDefaults(defineProps<ConfirmDialogProps>(), {
@@ -32,23 +33,18 @@ const emit = defineEmits<{
             {{ message }}
           </p>
           <div class="flex justify-end gap-3">
-            <button
-              class="px-4 py-2 rounded-lg bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] border border-[var(--color-border)] hover:opacity-80 transition-opacity"
+            <AppButton
+              variant="secondary"
               @click="emit('cancel')"
             >
               {{ cancelText }}
-            </button>
-            <button
-              class="px-4 py-2 rounded-lg text-[var(--color-text-primary)] border transition-opacity hover:opacity-80"
-              :class="
-                isDanger
-                  ? 'bg-red-600 border-red-600'
-                  : 'bg-[var(--color-bg-accent)] border-[var(--color-bg-accent)]'
-              "
+            </AppButton>
+            <AppButton
+              :variant="isDanger ? 'rose' : 'primary'"
               @click="emit('confirm')"
             >
               {{ confirmText }}
-            </button>
+            </AppButton>
           </div>
         </div>
       </div>
