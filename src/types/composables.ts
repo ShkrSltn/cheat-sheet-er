@@ -1,3 +1,5 @@
+import type { CategoryColor } from './components'
+
 // ============================================
 // useNavigation Composable
 // ============================================
@@ -32,6 +34,6 @@ export interface CategoryColorsComposable {
   getCategoryHoverStyles: (category: string) => CategoryHoverStyles
 }
 
-// Re-export CategoryColor from components (it's used by composable)
-export type { CategoryColor } from './components'
+// Re-export CategoryColor for external use
+export type { CategoryColor }
 
