@@ -17,7 +17,7 @@ export interface NavigationComposable {
 // useCategoryColors Composable
 // ============================================
 
-export interface CategoryStyles {
+export interface CategoryStyles extends Record<string, string> {
   backgroundColor: string
   borderColor: string
   color: string

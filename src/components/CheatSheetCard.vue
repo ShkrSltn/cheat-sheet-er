@@ -92,7 +92,7 @@ const formatDate = (isoDate: string): string => {
 }
 
 // Calculate content size based on character count and lines
-const contentSize = computed<'small' | 'medium' | 'large'>(() => {
+const contentSize = computed<'small' | 'medium' | 'large' | 'xlarge'>(() => {
   const content: string = props.cheatSheet.content
   const charCount: number = content.length
   const lineCount: number = content.split('\n').length
