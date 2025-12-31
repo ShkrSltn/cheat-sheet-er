@@ -16,11 +16,16 @@ const isPublicRoute = computed(() => {
 const shouldShowAuthGuard = computed(() => {
   return !isPublicRoute.value
 })
+// no header on auth routes
+const authRoutes = ['/login', '/register']
+const shouldShowHeader = computed(() => {
+  return !authRoutes.includes(route.path)
+})
 </script>
 
 <template>
   <div class="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
-    <AppHeader />
+    <AppHeader v-if="shouldShowHeader" />
 
     <AuthGuard v-if="shouldShowAuthGuard" :require-auth="true">
       <router-view />

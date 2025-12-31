@@ -37,11 +37,11 @@ const handleSubmit = async (): Promise<void> => {
 
 <template>
   <div
-    class="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] flex items-center justify-center"
+    class="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] flex items-center justify-center px-4 py-8"
   >
-    <div class="max-w-md w-full mx-4">
+    <div class="max-w-md w-full">
       <!-- Navigation -->
-      <div class="mb-6">
+      <div class="mb-4">
         <AppButton
           variant="ghost"
           icon="arrow-left"
@@ -52,17 +52,17 @@ const handleSubmit = async (): Promise<void> => {
       </div>
 
       <!-- Login Form -->
-      <div class="bg-[var(--color-bg-secondary)] rounded-lg shadow-xl p-8">
-        <div class="text-center mb-8">
+      <div class="bg-[var(--color-bg-secondary)] rounded-lg shadow-xl p-6">
+        <div class="text-center mb-6">
           <h1 class="text-3xl font-bold text-[var(--color-text-primary)] mb-2">Welcome Back</h1>
           <p class="text-[var(--color-text-secondary)]">Sign in to your account</p>
         </div>
 
-        <form @submit.prevent="handleSubmit" class="space-y-6">
+        <form @submit.prevent="handleSubmit" class="space-y-4">
           <div>
             <label
               for="email"
-              class="block text-sm font-medium text-[var(--color-text-primary)] mb-2"
+              class="block text-sm font-medium text-[var(--color-text-primary)] mb-1.5"
             >
               Email
             </label>
@@ -79,7 +79,7 @@ const handleSubmit = async (): Promise<void> => {
           <div>
             <label
               for="password"
-              class="block text-sm font-medium text-[var(--color-text-primary)] mb-2"
+              class="block text-sm font-medium text-[var(--color-text-primary)] mb-1.5"
             >
               Password
             </label>
@@ -113,7 +113,7 @@ const handleSubmit = async (): Promise<void> => {
           </AppButton>
         </form>
 
-        <div class="mt-6 text-center">
+        <div class="mt-4 text-center">
           <p class="text-[var(--color-text-secondary)]">
             Don't have an account?
             <AppButton

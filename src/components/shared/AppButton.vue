@@ -27,12 +27,15 @@ const emit = defineEmits<{
 }>()
 
 const buttonClasses = computed(() => {
-  const baseClasses = 'font-medium transition-colors rounded-md flex items-center justify-center gap-2'
+  const isLink = props.variant === 'link'
+  const baseClasses = isLink
+    ? 'font-medium transition-colors inline-flex items-center gap-2'
+    : 'font-medium transition-colors rounded-md flex items-center justify-center gap-2'
 
   const sizeClasses = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2',
-    lg: 'px-8 py-3 text-lg',
+    sm: isLink ? 'text-sm' : 'px-3 py-1.5 text-sm',
+    md: isLink ? '' : 'px-4 py-2',
+    lg: isLink ? 'text-lg' : 'px-8 py-3 text-lg',
   }
 
   const variantClasses = {
@@ -41,7 +44,7 @@ const buttonClasses = computed(() => {
     emerald: 'border border-emerald-400 text-emerald-400 hover:bg-emerald-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2',
     rose: 'border border-rose-400 text-rose-400 hover:bg-rose-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-rose-400 focus:ring-offset-2',
     ghost: 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)]',
-    link: 'text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] underline-offset-4 hover:underline',
+    link: 'text-emerald-400 hover:text-emerald-300 underline-offset-4 hover:underline font-semibold',
   }
 
   const widthClass = props.fullWidth ? 'w-full' : ''
