@@ -50,14 +50,7 @@ const formatDate = (isoDate: string): string => {
               class="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors ml-4"
               @click="emit('close')"
             >
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              <font-awesome-icon icon="times" class="w-6 h-6" />
             </button>
           </div>
 
@@ -75,25 +68,11 @@ const formatDate = (isoDate: string): string => {
               class="px-3 py-1.5 rounded-lg font-medium border transition-all category-badge flex items-center gap-2"
               :style="getCategoryStyles(cheatSheet.category)"
             >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                />
-              </svg>
+              <font-awesome-icon icon="tag" class="w-4 h-4" />
               {{ cheatSheet.category }}
             </span>
             <span class="flex items-center gap-2 text-[var(--color-text-primary)] opacity-70">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <font-awesome-icon icon="clock" class="w-4 h-4" />
               {{ formatDate(cheatSheet.updatedAt) }}
             </span>
           </div>

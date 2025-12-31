@@ -57,20 +57,13 @@ const handleSubmit = async (): Promise<void> => {
     <div class="max-w-md w-full mx-4">
       <!-- Navigation -->
       <div class="mb-6">
-        <button
-          @click="goHome"
-          class="flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] px-3 py-2 rounded-md transition-colors"
-        >
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"
-            />
-          </svg>
-          Back to Home
-        </button>
+      <button
+        @click="goHome"
+        class="flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] px-3 py-2 rounded-md transition-colors"
+      >
+        <font-awesome-icon icon="arrow-left" class="w-5 h-5 mr-2" />
+        Back to Home
+      </button>
       </div>
 
       <!-- Register Form -->
@@ -161,14 +154,7 @@ const handleSubmit = async (): Promise<void> => {
             :disabled="isSubmitting"
             class="w-full border border-emerald-400 text-emerald-400 py-2 px-4 rounded-md hover:bg-emerald-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center justify-center gap-2"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-              />
-            </svg>
+            <font-awesome-icon icon="user-plus" class="w-4 h-4" />
             <span v-if="isSubmitting">Creating account...</span>
             <span v-else>Sign Up</span>
           </button>

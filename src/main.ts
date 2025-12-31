@@ -6,8 +6,12 @@ import App from './App.vue'
 import router from './router'
 import './assets/main.css'
 import { useAuthStore } from './stores/auth'
+import { FontAwesomeIcon } from './plugins/fontawesome'
 
 const app = createApp(App)
+
+// Register FontAwesome component globally
+app.component('font-awesome-icon', FontAwesomeIcon)
 
 const pinia = createPinia()
 app.use(pinia)

@@ -41,20 +41,13 @@ const handleSubmit = async (): Promise<void> => {
     <div class="max-w-md w-full mx-4">
       <!-- Navigation -->
       <div class="mb-6">
-        <button
-          @click="goHome"
-          class="flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] px-3 py-2 rounded-md transition-colors"
-        >
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"
-            />
-          </svg>
-          Back to Home
-        </button>
+      <button
+        @click="goHome"
+        class="flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] px-3 py-2 rounded-md transition-colors"
+      >
+        <font-awesome-icon icon="arrow-left" class="w-5 h-5 mr-2" />
+        Back to Home
+      </button>
       </div>
 
       <!-- Login Form -->
@@ -111,14 +104,7 @@ const handleSubmit = async (): Promise<void> => {
             :disabled="isSubmitting"
             class="w-full border border-[var(--color-accent)] text-[var(--color-accent)] py-2 px-4 rounded-md hover:bg-[var(--color-accent)] hover:text-white focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center justify-center gap-2"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-              />
-            </svg>
+            <font-awesome-icon icon="sign-in-alt" class="w-4 h-4" />
             <span v-if="isSubmitting">Signing in...</span>
             <span v-else>Sign In</span>
           </button>

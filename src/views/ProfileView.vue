@@ -92,14 +92,7 @@ const formatDate = (dateString: string): string => {
         @click="goHome"
         class="flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] px-3 py-2 rounded-md transition-colors"
       >
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M10 19l-7-7m0 0l7-7m-7 7h18"
-          />
-        </svg>
+        <font-awesome-icon icon="arrow-left" class="w-5 h-5 mr-2" />
         Back to Home
       </button>
     </div>
@@ -132,14 +125,7 @@ const formatDate = (dateString: string): string => {
           @click="startEditing"
           class="border border-[var(--color-accent)] text-[var(--color-accent)] px-6 py-2 rounded-md hover:bg-[var(--color-accent)] hover:text-white transition-colors font-medium flex items-center gap-2"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-            />
-          </svg>
+          <font-awesome-icon icon="pen" class="w-4 h-4" />
           Edit Profile
         </button>
       </div>
@@ -181,14 +167,7 @@ const formatDate = (dateString: string): string => {
             type="submit"
             class="border border-emerald-400 text-emerald-400 px-6 py-2 rounded-md hover:bg-emerald-400 hover:text-white transition-colors font-medium flex items-center gap-2"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
+            <font-awesome-icon icon="check" class="w-4 h-4" />
             Save Changes
           </button>
           <button
@@ -196,14 +175,7 @@ const formatDate = (dateString: string): string => {
             @click="cancelEditing"
             class="border border-rose-400 text-rose-400 px-6 py-2 rounded-md hover:bg-rose-400 hover:text-white transition-colors font-medium flex items-center gap-2"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <font-awesome-icon icon="times" class="w-4 h-4" />
             Cancel
           </button>
         </div>
@@ -215,19 +187,10 @@ const formatDate = (dateString: string): string => {
       <div class="bg-[var(--color-bg-secondary)] rounded-lg p-6">
         <div class="flex items-center">
           <div class="p-3 bg-[var(--color-accent)] bg-opacity-10 rounded-lg">
-            <svg
+            <font-awesome-icon
+              icon="file-alt"
               class="w-6 h-6 text-[var(--color-accent)]"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
+            />
           </div>
           <div class="ml-4">
             <p class="text-sm font-medium text-[var(--color-text-secondary)]">Total Cheat Sheets</p>
@@ -241,19 +204,10 @@ const formatDate = (dateString: string): string => {
       <div class="bg-[var(--color-bg-secondary)] rounded-lg p-6">
         <div class="flex items-center">
           <div class="p-3 bg-[var(--color-accent)] bg-opacity-10 rounded-lg">
-            <svg
+            <font-awesome-icon
+              icon="tag"
               class="w-6 h-6 text-[var(--color-accent)]"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-              />
-            </svg>
+            />
           </div>
           <div class="ml-4">
             <p class="text-sm font-medium text-[var(--color-text-secondary)]">Categories</p>
@@ -300,19 +254,10 @@ const formatDate = (dateString: string): string => {
     <!-- Empty State -->
     <div v-else class="text-center py-12">
       <div class="text-[var(--color-text-secondary)]">
-        <svg
+        <font-awesome-icon
+          icon="file-alt"
           class="w-16 h-16 mx-auto mb-4 opacity-50"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1"
-            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-          />
-        </svg>
+        />
         <p class="text-lg">No cheat sheets yet</p>
         <p class="text-sm mt-2 opacity-70">Start creating your first cheat sheet!</p>
       </div>
