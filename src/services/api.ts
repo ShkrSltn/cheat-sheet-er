@@ -1,18 +1,17 @@
-import type { CheatSheet, CheatSheetInput, CheatSheetUpdate, User, LoginCredentials, RegisterCredentials } from '@/types'
+import type {
+  CheatSheet,
+  CheatSheetInput,
+  CheatSheetUpdate,
+  User,
+  LoginCredentials,
+  RegisterCredentials,
+  AuthResponse,
+  ApiError,
+} from '@/types'
 
 const API_BASE = import.meta.env.VITE_API_URL
   ? `${import.meta.env.VITE_API_URL}`
   : '/api'
-
-interface AuthResponse {
-  access_token: string
-  user: User
-}
-
-interface ApiError {
-  message: string
-  statusCode: number
-}
 
 class ApiClient {
   private token: string | null = null

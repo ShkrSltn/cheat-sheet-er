@@ -1,14 +1,7 @@
 <script setup lang="ts">
-interface Props {
-  isOpen: boolean
-  title: string
-  message: string
-  confirmText?: string
-  cancelText?: string
-  isDanger?: boolean
-}
+import type { ConfirmDialogProps } from '@/types/components'
 
-withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<ConfirmDialogProps>(), {
   confirmText: 'Confirm',
   cancelText: 'Cancel',
   isDanger: false,

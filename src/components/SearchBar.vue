@@ -1,15 +1,13 @@
 <script setup lang="ts">
-interface Props {
-  modelValue: string
-}
+import type { SearchBarProps } from '@/types/components'
 
-defineProps<Props>()
+defineProps<SearchBarProps>()
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
 
-const handleInput = (event: Event) => {
+const handleInput = (event: Event): void => {
   const target = event.target as HTMLInputElement
   emit('update:modelValue', target.value)
 }

@@ -60,31 +60,31 @@ const hasNoCheatSheets = computed(
 
 const hasNoCategories = computed(() => categories.value.length === 0)
 
-const handleSearch = (query: string) => {
+const handleSearch = (query: string): void => {
   store.setSearchQuery(query)
 }
 
-const handleCategoryChange = (category: string | null) => {
+const handleCategoryChange = (category: string | null): void => {
   store.setActiveCategory(category)
 }
 
-const handleCreate = () => {
+const handleCreate = (): void => {
   editingCheatSheet.value = null
   initialCategory.value = ''
   isModalOpen.value = true
 }
 
-const handleCreateInCategory = (category: string) => {
+const handleCreateInCategory = (category: string): void => {
   editingCheatSheet.value = null
   initialCategory.value = category
   isModalOpen.value = true
 }
 
-const handleCreateCategory = () => {
+const handleCreateCategory = (): void => {
   isCategoryDialogOpen.value = true
 }
 
-const handleCategorySave = async (category: string) => {
+const handleCategorySave = async (category: string): Promise<void> => {
   try {
     await store.addCategory(category)
     isCategoryDialogOpen.value = false
@@ -94,13 +94,15 @@ const handleCategorySave = async (category: string) => {
   }
 }
 
-const handleCloseCategoryDialog = () => {
+const handleCloseCategoryDialog = (): void => {
   isCategoryDialogOpen.value = false
 }
 
-const handleDeleteCategoryRequest = (category: string) => {
+const handleDeleteCategoryRequest = (category: string): void => {
   // Check if category has cheat sheets
-  const hasCheatSheets = cheatSheets.value.some((sheet) => sheet.category === category)
+  const hasCheatSheets: boolean = cheatSheets.value.some(
+    (sheet) => sheet.category === category,
+  )
 
   if (hasCheatSheets) {
     forceDeletingCategory.value = category
@@ -111,9 +113,9 @@ const handleDeleteCategoryRequest = (category: string) => {
   }
 }
 
-const handleDeleteCategoryConfirm = async () => {
+const handleDeleteCategoryConfirm = async (): Promise<void> => {
   if (deletingCategory.value) {
-    const success = await store.deleteCategory(deletingCategory.value)
+    const success: boolean = await store.deleteCategory(deletingCategory.value)
 
     if (success) {
       // If we were viewing this category, switch to "All"
@@ -129,14 +131,14 @@ const handleDeleteCategoryConfirm = async () => {
   isDeleteCategoryDialogOpen.value = false
 }
 
-const handleDeleteCategoryCancel = () => {
+const handleDeleteCategoryCancel = (): void => {
   deletingCategory.value = null
   isDeleteCategoryDialogOpen.value = false
 }
 
-const handleForceDeleteCategoryConfirm = async () => {
+const handleForceDeleteCategoryConfirm = async (): Promise<void> => {
   if (forceDeletingCategory.value) {
-    const success = await store.forceDeleteCategory(forceDeletingCategory.value)
+    const success: boolean = await store.forceDeleteCategory(forceDeletingCategory.value)
 
     if (success) {
       // If we were viewing this category, switch to "All"
@@ -152,30 +154,30 @@ const handleForceDeleteCategoryConfirm = async () => {
   isForceDeleteDialogOpen.value = false
 }
 
-const handleForceDeleteCategoryCancel = () => {
+const handleForceDeleteCategoryCancel = (): void => {
   forceDeletingCategory.value = null
   isForceDeleteDialogOpen.value = false
 }
 
-const handleView = (id: string) => {
-  const cheatSheet = store.getById(id)
+const handleView = (id: string): void => {
+  const cheatSheet: CheatSheet | undefined = store.getById(id)
   if (cheatSheet) {
     viewingCheatSheet.value = cheatSheet
     isViewModalOpen.value = true
   }
 }
 
-const handleCloseViewModal = () => {
+const handleCloseViewModal = (): void => {
   isViewModalOpen.value = false
   viewingCheatSheet.value = null
 }
 
-const handleDeleteRequest = (id: string) => {
+const handleDeleteRequest = (id: string): void => {
   deletingId.value = id
   isDeleteDialogOpen.value = true
 }
 
-const handleDeleteConfirm = async () => {
+const handleDeleteConfirm = async (): Promise<void> => {
   if (deletingId.value) {
     try {
       await store.deleteCheatSheet(deletingId.value)
@@ -188,7 +190,7 @@ const handleDeleteConfirm = async () => {
   isDeleteDialogOpen.value = false
 }
 
-const handleDeleteCancel = () => {
+const handleDeleteCancel = (): void => {
   deletingId.value = null
   isDeleteDialogOpen.value = false
 }
@@ -198,7 +200,7 @@ const handleSave = async (data: {
   description: string
   category: string
   content: string
-}) => {
+}): Promise<void> => {
   try {
     if (editingCheatSheet.value) {
       await store.updateCheatSheet(editingCheatSheet.value.id, {
@@ -224,7 +226,7 @@ const handleSave = async (data: {
   }
 }
 
-const handleCloseModal = () => {
+const handleCloseModal = (): void => {
   isModalOpen.value = false
   editingCheatSheet.value = null
   initialCategory.value = ''

@@ -1,14 +1,8 @@
 <script setup lang="ts">
 import { useCategoryColors } from '@/composables/useCategoryColors'
+import type { CategoryTabsProps } from '@/types/components'
 
-interface Props {
-  categories: string[]
-  activeCategory: string | null
-  totalCount: number
-  categoryCounts: Record<string, number>
-}
-
-defineProps<Props>()
+defineProps<CategoryTabsProps>()
 
 const emit = defineEmits<{
   'update:activeCategory': [category: string | null]
@@ -19,7 +13,7 @@ const emit = defineEmits<{
 
 const { getCategoryStyles } = useCategoryColors()
 
-const handleDeleteCategory = (event: Event, category: string) => {
+const handleDeleteCategory = (event: Event, category: string): void => {
   event.stopPropagation()
   emit('delete-category', category)
 }

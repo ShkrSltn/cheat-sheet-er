@@ -1,34 +1,25 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useNavigation } from '@/composables/useNavigation'
 
-const router = useRouter()
 const authStore = useAuthStore()
 const { user, isAuthenticated } = storeToRefs(authStore)
 
-const handleLogin = () => {
-  router.push('/login')
-}
+const {
+  navigateToLogin: handleLogin,
+  navigateToRegister: handleRegister,
+  navigateToProfile: handleProfile,
+  navigateToDashboard,
+  navigateToHome,
+  logout: handleLogout,
+} = useNavigation()
 
-const handleRegister = () => {
-  router.push('/register')
-}
-
-const handleLogout = () => {
-  authStore.logout()
-  router.push('/login')
-}
-
-const handleProfile = () => {
-  router.push('/profile')
-}
-
-const handleLogoClick = () => {
+const handleLogoClick = (): void => {
   if (isAuthenticated.value) {
-    router.push('/dashboard')
+    navigateToDashboard()
   } else {
-    router.push('/')
+    navigateToHome()
   }
 }
 </script>

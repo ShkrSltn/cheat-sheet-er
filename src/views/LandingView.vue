@@ -1,15 +1,9 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useNavigation } from '@/composables/useNavigation'
 
-const router = useRouter()
+const year = new Date().getFullYear()
 
-const goToLogin = () => {
-  router.push('/login')
-}
-
-const goToRegister = () => {
-  router.push('/register')
-}
+const { navigateToLogin: goToLogin, navigateToRegister: goToRegister } = useNavigation()
 </script>
 
 <template>
@@ -265,7 +259,7 @@ const goToRegister = () => {
     <footer class="py-12 border-t border-[var(--color-border)]">
       <div class="max-w-7xl mx-auto px-6 text-center">
         <p class="text-[var(--color-text-secondary)]">
-          © 2024 Notareon. Built with ❤️ for developers.
+          © {{ year }} Notareon. Built with ❤️ for developers.
         </p>
       </div>
     </footer>

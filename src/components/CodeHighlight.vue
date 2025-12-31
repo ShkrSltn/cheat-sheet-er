@@ -39,20 +39,16 @@ hljs.registerLanguage('ruby', ruby)
 hljs.registerLanguage('swift', swift)
 hljs.registerLanguage('kotlin', kotlin)
 
-interface Props {
-  code: string
-  language?: string
-  autoDetect?: boolean
-}
+import type { CodeHighlightProps } from '@/types/components'
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<CodeHighlightProps>(), {
   language: '',
   autoDetect: true,
 })
 
 const codeRef = ref<HTMLElement>()
 
-const highlightCode = () => {
+const highlightCode = (): void => {
   if (!codeRef.value) return
 
   if (props.language) {

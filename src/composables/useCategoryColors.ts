@@ -1,11 +1,9 @@
-export interface CategoryColor {
-  bg: string
-  bgHover: string
-  bgActive: string
-  border: string
-  borderHover: string
-  text: string
-}
+import type {
+  CategoryColor,
+  CategoryStyles,
+  CategoryHoverStyles,
+  CategoryColorsComposable,
+} from '@/types'
 
 const colorPalette: CategoryColor[] = [
   // Muted Blue
@@ -190,22 +188,22 @@ const colorPalette: CategoryColor[] = [
   },
 ]
 
-export function useCategoryColors() {
+export function useCategoryColors(): CategoryColorsComposable {
   const getCategoryColor = (category: string): CategoryColor => {
     // Generate a consistent hash from the category name
-    let hash = 0
+    let hash: number = 0
     for (let i = 0; i < category.length; i++) {
       hash = category.charCodeAt(i) + ((hash << 5) - hash)
       hash = hash & hash // Convert to 32bit integer
     }
 
     // Use the hash to select a color from the palette
-    const index = Math.abs(hash) % colorPalette.length
+    const index: number = Math.abs(hash) % colorPalette.length
     return colorPalette[index]!
   }
 
-  const getCategoryStyles = (category: string, isActive: boolean = false) => {
-    const colors = getCategoryColor(category)
+  const getCategoryStyles = (category: string, isActive: boolean = false): CategoryStyles => {
+    const colors: CategoryColor = getCategoryColor(category)
 
     return {
       backgroundColor: isActive ? colors.bgActive : colors.bg,
@@ -214,8 +212,8 @@ export function useCategoryColors() {
     }
   }
 
-  const getCategoryHoverStyles = (category: string) => {
-    const colors = getCategoryColor(category)
+  const getCategoryHoverStyles = (category: string): CategoryHoverStyles => {
+    const colors: CategoryColor = getCategoryColor(category)
 
     return {
       '--hover-bg': colors.bgHover,

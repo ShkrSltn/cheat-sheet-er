@@ -2,20 +2,16 @@
 import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useToast } from 'vue-toastification'
-import type { CheatSheet } from '@/types'
 import CodeHighlight from './CodeHighlight.vue'
 import { useCheatSheetsStore } from '@/stores/cheatSheets'
 import { useCategoryColors } from '@/composables/useCategoryColors'
+import type { CheatSheetCardProps } from '@/types/components'
+import type { CheatSheetFormData } from '@/types/components'
 
 const toast = useToast()
 const { getCategoryStyles, getCategoryColor } = useCategoryColors()
 
-interface Props {
-  cheatSheet: CheatSheet
-  totalCount: number
-}
-
-const props = defineProps<Props>()
+const props = defineProps<CheatSheetCardProps>()
 
 const emit = defineEmits<{
   view: [id: string]
@@ -25,23 +21,23 @@ const emit = defineEmits<{
 const store = useCheatSheetsStore()
 const { categories } = storeToRefs(store)
 
-const isEditing = ref(false)
+const isEditing = ref<boolean>(false)
 const textareaRef = ref<HTMLTextAreaElement>()
-const editForm = ref({
+const editForm = ref<CheatSheetFormData>({
   title: '',
   description: '',
   category: '',
   content: '',
 })
 
-const adjustTextareaHeight = () => {
+const adjustTextareaHeight = (): void => {
   if (textareaRef.value) {
     textareaRef.value.style.height = 'auto'
     textareaRef.value.style.height = textareaRef.value.scrollHeight + 'px'
   }
 }
 
-const startEdit = () => {
+const startEdit = (): void => {
   editForm.value = {
     title: props.cheatSheet.title,
     description: props.cheatSheet.description,
@@ -56,11 +52,11 @@ const startEdit = () => {
   }, 0)
 }
 
-const cancelEdit = () => {
+const cancelEdit = (): void => {
   isEditing.value = false
 }
 
-const saveEdit = () => {
+const saveEdit = (): void => {
   if (!editForm.value.title.trim() || !editForm.value.content.trim()) {
     toast.warning('Title and content are required')
     return
@@ -77,7 +73,7 @@ const saveEdit = () => {
   toast.success('Cheat sheet updated!')
 }
 
-const copyContent = async () => {
+const copyContent = async (): Promise<void> => {
   try {
     await navigator.clipboard.writeText(props.cheatSheet.content)
     toast.success('Content copied to clipboard!')
@@ -87,7 +83,7 @@ const copyContent = async () => {
   }
 }
 
-const formatDate = (isoDate: string) => {
+const formatDate = (isoDate: string): string => {
   return new Date(isoDate).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
@@ -96,10 +92,10 @@ const formatDate = (isoDate: string) => {
 }
 
 // Calculate content size based on character count and lines
-const contentSize = computed(() => {
-  const content = props.cheatSheet.content
-  const charCount = content.length
-  const lineCount = content.split('\n').length
+const contentSize = computed<'small' | 'medium' | 'large'>(() => {
+  const content: string = props.cheatSheet.content
+  const charCount: number = content.length
+  const lineCount: number = content.split('\n').length
 
   // Small: less than 200 chars or 5 lines
   if (charCount < 200 || lineCount < 5) return 'small'

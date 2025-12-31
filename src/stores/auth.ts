@@ -18,13 +18,13 @@ export const useAuthStore = defineStore('auth', () => {
   )
 
   // Initialize user from token if available
-  const initAuth = async () => {
-    const token = api.getToken()
+  const initAuth = async (): Promise<void> => {
+    const token: string | null = api.getToken()
     if (token && !user.value) {
       try {
-        const profile = await api.getProfile()
+        const profile: User = await api.getProfile()
         user.value = profile
-      } catch (error) {
+      } catch {
         // Token is invalid, clear it
         api.setToken(null)
       }
@@ -48,7 +48,8 @@ export const useAuthStore = defineStore('auth', () => {
 
       return { success: true }
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Login failed. Please try again.'
+      const message: string =
+        error instanceof Error ? error.message : 'Login failed. Please try again.'
       return { success: false, error: message }
     } finally {
       isLoading.value = false
@@ -81,19 +82,20 @@ export const useAuthStore = defineStore('auth', () => {
 
       return { success: true }
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Registration failed. Please try again.'
+      const message: string =
+        error instanceof Error ? error.message : 'Registration failed. Please try again.'
       return { success: false, error: message }
     } finally {
       isLoading.value = false
     }
   }
 
-  const logout = () => {
+  const logout = (): void => {
     user.value = null
     api.setToken(null)
   }
 
-  const clearAuth = () => {
+  const clearAuth = (): void => {
     user.value = null
     api.setToken(null)
   }

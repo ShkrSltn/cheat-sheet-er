@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import type { CheatSheet } from '@/types'
 import CodeHighlight from './CodeHighlight.vue'
 import { useCategoryColors } from '@/composables/useCategoryColors'
+import type { CheatSheetViewModalProps } from '@/types/components'
 
-interface Props {
-  isOpen: boolean
-  cheatSheet: CheatSheet | null
-}
-
-defineProps<Props>()
+defineProps<CheatSheetViewModalProps>()
 
 const emit = defineEmits<{
   close: []
@@ -16,7 +11,7 @@ const emit = defineEmits<{
 
 const { getCategoryStyles } = useCategoryColors()
 
-const formatDate = (isoDate: string) => {
+const formatDate = (isoDate: string): string => {
   return new Date(isoDate).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',

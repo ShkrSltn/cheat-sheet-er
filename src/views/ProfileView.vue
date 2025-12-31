@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useCheatSheetsStore } from '@/stores/cheatSheets'
 import { useToast } from 'vue-toastification'
+import type { EditForm, UserStats, CheatSheet } from '@/types'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -15,7 +16,7 @@ const { cheatSheets } = storeToRefs(cheatSheetsStore)
 const toast = useToast()
 
 // Load cheat sheets if not already loaded
-onMounted(async () => {
+onMounted(async (): Promise<void> => {
   if (cheatSheets.value.length === 0) {
     try {
       await cheatSheetsStore.fetchCheatSheets()
@@ -25,20 +26,20 @@ onMounted(async () => {
   }
 })
 
-const goHome = () => {
+const goHome = (): void => {
   router.push('/dashboard')
 }
 
-const isEditing = ref(false)
-const editForm = ref({
+const isEditing = ref<boolean>(false)
+const editForm = ref<EditForm>({
   name: '',
   email: '',
 })
 
-const userStats = computed(() => {
-  const totalSheets = cheatSheets.value.length
-  const categories = new Set(cheatSheets.value.map((sheet) => sheet.category)).size
-  const recentSheets = [...cheatSheets.value]
+const userStats = computed<UserStats>(() => {
+  const totalSheets: number = cheatSheets.value.length
+  const categories: number = new Set(cheatSheets.value.map((sheet) => sheet.category)).size
+  const recentSheets: CheatSheet[] = [...cheatSheets.value]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 5)
 
@@ -49,7 +50,7 @@ const userStats = computed(() => {
   }
 })
 
-const startEditing = () => {
+const startEditing = (): void => {
   if (user.value) {
     editForm.value = {
       name: user.value.name,
@@ -59,12 +60,12 @@ const startEditing = () => {
   }
 }
 
-const cancelEditing = () => {
+const cancelEditing = (): void => {
   isEditing.value = false
   editForm.value = { name: '', email: '' }
 }
 
-const saveProfile = () => {
+const saveProfile = (): void => {
   if (!user.value) return
 
   // In a real app, this would make an API call to update the user
@@ -74,7 +75,7 @@ const saveProfile = () => {
   isEditing.value = false
 }
 
-const formatDate = (dateString: string) => {
+const formatDate = (dateString: string): string => {
   return new Date(dateString).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',

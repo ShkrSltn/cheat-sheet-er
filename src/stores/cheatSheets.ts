@@ -6,13 +6,13 @@ import { api } from '@/services/api'
 export const useCheatSheetsStore = defineStore('cheatSheets', () => {
   const cheatSheets = ref<CheatSheet[]>([])
   const customCategories = ref<string[]>([])
-  const searchQuery = ref('')
+  const searchQuery = ref<string>('')
   const activeCategory = ref<string | null>(null)
-  const isLoading = ref(false)
+  const isLoading = ref<boolean>(false)
 
   // Getters
-  const filteredCheatSheets = computed(() => {
-    let filtered = cheatSheets.value
+  const filteredCheatSheets = computed<CheatSheet[]>(() => {
+    let filtered: CheatSheet[] = cheatSheets.value
 
     // Filter by category
     if (activeCategory.value) {
@@ -21,7 +21,7 @@ export const useCheatSheetsStore = defineStore('cheatSheets', () => {
 
     // Filter by search query
     if (searchQuery.value.trim()) {
-      const query = searchQuery.value.toLowerCase()
+      const query: string = searchQuery.value.toLowerCase()
       filtered = filtered.filter(
         (sheet) =>
           sheet.title.toLowerCase().includes(query) ||
@@ -34,16 +34,16 @@ export const useCheatSheetsStore = defineStore('cheatSheets', () => {
     return filtered
   })
 
-  const categories = computed(() => {
+  const categories = computed<string[]>(() => {
     // Combine custom categories and categories from cheat sheets
-    const fromSheets = cheatSheets.value
+    const fromSheets: string[] = cheatSheets.value
       .map((sheet) => sheet.category)
       .filter((category) => category.trim())
-    const allCategories = new Set([...customCategories.value, ...fromSheets])
+    const allCategories: Set<string> = new Set([...customCategories.value, ...fromSheets])
     return Array.from(allCategories).sort()
   })
 
-  const categoryCounts = computed(() => {
+  const categoryCounts = computed<Record<string, number>>(() => {
     const counts: Record<string, number> = {}
     cheatSheets.value.forEach((sheet) => {
       if (sheet.category) {
@@ -53,7 +53,7 @@ export const useCheatSheetsStore = defineStore('cheatSheets', () => {
     return counts
   })
 
-  const getById = (id: string) => {
+  const getById = (id: string): CheatSheet | undefined => {
     return cheatSheets.value.find((sheet) => sheet.id === id)
   }
 
@@ -61,7 +61,7 @@ export const useCheatSheetsStore = defineStore('cheatSheets', () => {
   const fetchCheatSheets = async (): Promise<void> => {
     isLoading.value = true
     try {
-      const sheets = await api.getCheatSheets()
+      const sheets: CheatSheet[] = await api.getCheatSheets()
       cheatSheets.value = sheets
     } catch (error) {
       console.error('Failed to fetch cheat sheets:', error)
@@ -73,7 +73,7 @@ export const useCheatSheetsStore = defineStore('cheatSheets', () => {
 
   const fetchCategories = async (): Promise<void> => {
     try {
-      const cats = await api.getCategories()
+      const cats: string[] = await api.getCategories()
       customCategories.value = cats
     } catch (error) {
       console.error('Failed to fetch categories:', error)
@@ -82,7 +82,7 @@ export const useCheatSheetsStore = defineStore('cheatSheets', () => {
   }
 
   const addCategory = async (category: string): Promise<void> => {
-    const trimmed = category.trim()
+    const trimmed: string = category.trim()
     if (!trimmed) return
     if (customCategories.value.includes(trimmed)) return
 
@@ -97,7 +97,7 @@ export const useCheatSheetsStore = defineStore('cheatSheets', () => {
 
   const deleteCategory = async (category: string): Promise<boolean> => {
     // Check if there are any cheat sheets using this category
-    const hasCheatSheets = cheatSheets.value.some((sheet) => sheet.category === category)
+    const hasCheatSheets: boolean = cheatSheets.value.some((sheet) => sheet.category === category)
     if (hasCheatSheets) {
       return false // Cannot delete category with cheat sheets
     }
@@ -126,7 +126,7 @@ export const useCheatSheetsStore = defineStore('cheatSheets', () => {
 
   const addCheatSheet = async (input: CheatSheetInput): Promise<CheatSheet> => {
     try {
-      const newSheet = await api.createCheatSheet(input)
+      const newSheet: CheatSheet = await api.createCheatSheet(input)
       cheatSheets.value.unshift(newSheet)
       return newSheet
     } catch (error) {
@@ -137,8 +137,8 @@ export const useCheatSheetsStore = defineStore('cheatSheets', () => {
 
   const updateCheatSheet = async (id: string, updates: CheatSheetUpdate): Promise<void> => {
     try {
-      const updatedSheet = await api.updateCheatSheet(id, updates)
-      const index = cheatSheets.value.findIndex((sheet) => sheet.id === id)
+      const updatedSheet: CheatSheet = await api.updateCheatSheet(id, updates)
+      const index: number = cheatSheets.value.findIndex((sheet) => sheet.id === id)
       if (index !== -1) {
         cheatSheets.value[index] = updatedSheet
       }
@@ -151,7 +151,7 @@ export const useCheatSheetsStore = defineStore('cheatSheets', () => {
   const deleteCheatSheet = async (id: string): Promise<void> => {
     try {
       await api.deleteCheatSheet(id)
-      const index = cheatSheets.value.findIndex((sheet) => sheet.id === id)
+      const index: number = cheatSheets.value.findIndex((sheet) => sheet.id === id)
       if (index !== -1) {
         cheatSheets.value.splice(index, 1)
       }

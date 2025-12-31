@@ -1,3 +1,7 @@
+// ============================================
+// Domain Models
+// ============================================
+
 export interface CheatSheet {
   id: string
   title: string
@@ -19,6 +23,10 @@ export interface User {
   createdAt: string
 }
 
+// ============================================
+// Auth Types
+// ============================================
+
 export interface LoginCredentials {
   email: string
   password: string
@@ -36,3 +44,35 @@ export interface AuthState {
   isAuthenticated: boolean
   isLoading: boolean
 }
+
+// ============================================
+// API Types
+// ============================================
+
+export interface AuthResponse {
+  access_token: string
+  user: User
+}
+
+export interface ApiError {
+  message: string
+  statusCode: number
+}
+
+// ============================================
+// Component Types
+// ============================================
+
+export * from './components'
+
+// ============================================
+// Composable Types
+// ============================================
+
+export * from './composables'
+
+// ============================================
+// View Types
+// ============================================
+
+export * from './views'

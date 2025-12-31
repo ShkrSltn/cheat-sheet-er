@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useNavigation } from '@/composables/useNavigation'
 import type { RegisterCredentials } from '@/types'
 
-const router = useRouter()
 const authStore = useAuthStore()
+const { navigateToLogin: goToLogin, navigateToHome: goHome, navigateToDashboard } = useNavigation()
 
 const credentials = ref<RegisterCredentials>({
   name: '',
@@ -14,10 +14,10 @@ const credentials = ref<RegisterCredentials>({
   confirmPassword: '',
 })
 
-const error = ref('')
-const isSubmitting = computed(() => authStore.isLoading)
+const error = ref<string>('')
+const isSubmitting = computed<boolean>(() => authStore.isLoading)
 
-const handleSubmit = async () => {
+const handleSubmit = async (): Promise<void> => {
   error.value = ''
 
   if (
@@ -43,18 +43,10 @@ const handleSubmit = async () => {
   const result = await authStore.register(credentials.value)
 
   if (result.success) {
-    router.push('/dashboard')
+    navigateToDashboard()
   } else {
     error.value = result.error || 'Registration failed'
   }
-}
-
-const goToLogin = () => {
-  router.push('/login')
-}
-
-const goHome = () => {
-  router.push('/')
 }
 </script>
 

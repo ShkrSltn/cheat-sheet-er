@@ -1,18 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useNavigation } from '@/composables/useNavigation'
+import type { AuthGuardProps } from '@/types/components'
 
-interface Props {
-  requireAuth?: boolean
-}
-
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<AuthGuardProps>(), {
   requireAuth: true,
 })
 
-const router = useRouter()
 const authStore = useAuthStore()
 const { isAuthenticated } = storeToRefs(authStore)
 
@@ -20,13 +16,7 @@ const shouldShowContent = computed(() => {
   return props.requireAuth ? isAuthenticated.value : true
 })
 
-const handleLogin = () => {
-  router.push('/login')
-}
-
-const handleRegister = () => {
-  router.push('/register')
-}
+const { navigateToLogin: handleLogin, navigateToRegister: handleRegister } = useNavigation()
 </script>
 
 <template>

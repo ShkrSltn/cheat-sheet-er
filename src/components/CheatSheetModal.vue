@@ -1,51 +1,31 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import type { CheatSheet } from '@/types'
 import { useCheatSheetsStore } from '@/stores/cheatSheets'
+import type { CheatSheetModalProps, CheatSheetFormData } from '@/types/components'
 
-interface Props {
-  isOpen: boolean
-  cheatSheet?: CheatSheet | null
-  initialCategory?: string
-}
-
-const props = defineProps<Props>()
+const props = defineProps<CheatSheetModalProps>()
 const store = useCheatSheetsStore()
 const { categories } = storeToRefs(store)
 
-interface SaveData {
-  title: string
-  description: string
-  category: string
-  content: string
-}
-
 const emit = defineEmits<{
   close: []
-  save: [data: SaveData]
+  save: [data: CheatSheetFormData]
 }>()
 
-interface FormData {
-  title: string
-  description: string
-  category: string
-  content: string
-}
-
-const form = ref<FormData>({
+const form = ref<CheatSheetFormData>({
   title: '',
   description: '',
   category: '',
   content: '',
 })
 
-const errors = ref<Partial<Record<keyof FormData, string>>>({})
-const isEditing = ref(false)
+const errors = ref<Partial<Record<keyof CheatSheetFormData, string>>>({})
+const isEditing = ref<boolean>(false)
 
 watch(
   () => props.isOpen,
-  (isOpen) => {
+  (isOpen: boolean): void => {
     if (isOpen) {
       errors.value = {}
       if (props.cheatSheet) {
@@ -95,12 +75,12 @@ const validateForm = (): boolean => {
   return Object.keys(errors.value).length === 0
 }
 
-const handleSave = () => {
+const handleSave = (): void => {
   if (!validateForm()) {
     return
   }
 
-  const data: SaveData = {
+  const data: CheatSheetFormData = {
     title: form.value.title.trim(),
     description: form.value.description.trim(),
     category: form.value.category.trim(),
@@ -110,7 +90,7 @@ const handleSave = () => {
   emit('save', data)
 }
 
-const handleClose = () => {
+const handleClose = (): void => {
   errors.value = {}
   emit('close')
 }

@@ -1,24 +1,20 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import type { CategoryDialogProps } from '@/types/components'
 
-interface Props {
-  isOpen: boolean
-  existingCategories: string[]
-}
-
-const props = defineProps<Props>()
+const props = defineProps<CategoryDialogProps>()
 
 const emit = defineEmits<{
   close: []
   save: [category: string]
 }>()
 
-const categoryName = ref('')
-const error = ref('')
+const categoryName = ref<string>('')
+const error = ref<string>('')
 
 watch(
   () => props.isOpen,
-  (isOpen) => {
+  (isOpen: boolean): void => {
     if (isOpen) {
       categoryName.value = ''
       error.value = ''
@@ -26,8 +22,8 @@ watch(
   },
 )
 
-const handleSave = () => {
-  const trimmed = categoryName.value.trim()
+const handleSave = (): void => {
+  const trimmed: string = categoryName.value.trim()
 
   if (!trimmed) {
     error.value = 'Category name is required'
@@ -54,7 +50,7 @@ const handleSave = () => {
   error.value = ''
 }
 
-const handleClose = () => {
+const handleClose = (): void => {
   categoryName.value = ''
   error.value = ''
   emit('close')
