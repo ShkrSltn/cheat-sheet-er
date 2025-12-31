@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useCheatSheetsStore } from '@/stores/cheatSheets'
 import { useToast } from 'vue-toastification'
+import { AppButton } from '@/components/shared'
 import type { EditForm, UserStats, CheatSheet } from '@/types'
 
 const router = useRouter()
@@ -88,13 +89,13 @@ const formatDate = (dateString: string): string => {
   <main class="max-w-4xl mx-auto px-6 py-8">
     <!-- Navigation -->
     <div class="mb-6">
-      <button
+      <AppButton
+        variant="ghost"
+        icon="arrow-left"
         @click="goHome"
-        class="flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] px-3 py-2 rounded-md transition-colors"
       >
-        <font-awesome-icon icon="arrow-left" class="w-5 h-5 mr-2" />
         Back to Home
-      </button>
+      </AppButton>
     </div>
 
     <!-- Profile Header -->
@@ -102,9 +103,9 @@ const formatDate = (dateString: string): string => {
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-6">
           <div
-            class="w-20 h-20 bg-[var(--color-accent)] rounded-full flex items-center justify-center"
+            class="w-20 h-20 bg-indigo-500 rounded-full flex items-center justify-center shadow-lg"
           >
-            <span class="text-2xl font-bold text-white">
+            <span class="text-3xl font-bold text-white">
               {{ user?.name?.charAt(0).toUpperCase() }}
             </span>
           </div>
@@ -120,14 +121,14 @@ const formatDate = (dateString: string): string => {
             </p>
           </div>
         </div>
-        <button
+        <AppButton
           v-if="!isEditing"
+          variant="primary"
+          icon="pen"
           @click="startEditing"
-          class="border border-[var(--color-accent)] text-[var(--color-accent)] px-6 py-2 rounded-md hover:bg-[var(--color-accent)] hover:text-white transition-colors font-medium flex items-center gap-2"
         >
-          <font-awesome-icon icon="pen" class="w-4 h-4" />
           Edit Profile
-        </button>
+        </AppButton>
       </div>
     </div>
 
@@ -163,21 +164,21 @@ const formatDate = (dateString: string): string => {
           />
         </div>
         <div class="flex space-x-4">
-          <button
+          <AppButton
             type="submit"
-            class="border border-emerald-400 text-emerald-400 px-6 py-2 rounded-md hover:bg-emerald-400 hover:text-white transition-colors font-medium flex items-center gap-2"
+            variant="emerald"
+            icon="check"
           >
-            <font-awesome-icon icon="check" class="w-4 h-4" />
             Save Changes
-          </button>
-          <button
+          </AppButton>
+          <AppButton
             type="button"
+            variant="rose"
+            icon="times"
             @click="cancelEditing"
-            class="border border-rose-400 text-rose-400 px-6 py-2 rounded-md hover:bg-rose-400 hover:text-white transition-colors font-medium flex items-center gap-2"
           >
-            <font-awesome-icon icon="times" class="w-4 h-4" />
             Cancel
-          </button>
+          </AppButton>
         </div>
       </form>
     </div>
@@ -186,10 +187,10 @@ const formatDate = (dateString: string): string => {
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
       <div class="bg-[var(--color-bg-secondary)] rounded-lg p-6">
         <div class="flex items-center">
-          <div class="p-3 bg-[var(--color-accent)] bg-opacity-10 rounded-lg">
+          <div class="p-3 rounded-lg" style="background-color: rgba(99, 102, 241, 0.1)">
             <font-awesome-icon
               icon="file-alt"
-              class="w-6 h-6 text-[var(--color-accent)]"
+              class="text-2xl text-indigo-500"
             />
           </div>
           <div class="ml-4">
@@ -203,10 +204,10 @@ const formatDate = (dateString: string): string => {
 
       <div class="bg-[var(--color-bg-secondary)] rounded-lg p-6">
         <div class="flex items-center">
-          <div class="p-3 bg-[var(--color-accent)] bg-opacity-10 rounded-lg">
+          <div class="p-3 rounded-lg" style="background-color: rgba(52, 211, 153, 0.1)">
             <font-awesome-icon
               icon="tag"
-              class="w-6 h-6 text-[var(--color-accent)]"
+              class="text-2xl text-emerald-400"
             />
           </div>
           <div class="ml-4">
@@ -242,7 +243,8 @@ const formatDate = (dateString: string): string => {
           </div>
           <div class="flex items-center space-x-2">
             <span
-              class="px-2 py-1 bg-[var(--color-accent)] bg-opacity-10 text-[var(--color-accent)] text-xs rounded-full"
+              class="px-2 py-1 text-indigo-500 text-xs rounded-full"
+              style="background-color: rgba(99, 102, 241, 0.1)"
             >
               {{ sheet.category }}
             </span>
@@ -256,7 +258,7 @@ const formatDate = (dateString: string): string => {
       <div class="text-[var(--color-text-secondary)]">
         <font-awesome-icon
           icon="file-alt"
-          class="w-16 h-16 mx-auto mb-4 opacity-50"
+          class="text-6xl mx-auto mb-4 opacity-50"
         />
         <p class="text-lg">No cheat sheets yet</p>
         <p class="text-sm mt-2 opacity-70">Start creating your first cheat sheet!</p>

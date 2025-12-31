@@ -209,10 +209,12 @@ const { navigateToLogin: goToLogin, navigateToRegister: goToRegister } = useNavi
     </section>
 
     <!-- Footer -->
-    <footer class="py-12 border-t border-[var(--color-border)]">
+    <footer class="py-8 border-t border-[var(--color-border)]">
       <div class="max-w-7xl mx-auto px-6 text-center">
-        <p class="text-[var(--color-text-secondary)]">
-          © {{ year }} Notareon. Built with ❤️ for developers.
+        <p class="text-sm text-[var(--color-text-secondary)]">
+          © {{ year }} Notareon by
+          <span class="text-[var(--color-text-primary)] font-medium">HaSu Studios</span>
+          — All rights reserved.
         </p>
       </div>
     </footer>
